@@ -6,6 +6,8 @@ function class_autoloader($className)
         dirname(__DIR__) . '/controllers/',
         dirname(__DIR__)  . '/models/',
         dirname(__DIR__)  . '/views/',
+        dirname(__DIR__)  . '/lib/',
+        dirname(__DIR__)  . '/template/',
         // Ajoutez d'autres dossiers si nécessaire
     ];
 

@@ -10,13 +10,13 @@ spl_autoload_register('class_autoloader');
 
 $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
-$userModel = new UserModel();
+$userController = new UserController();
 
 switch ($uri) {
     case '/':
         if (isset($_GET)) {
             http_response_code(200);
-            $content = $userModel->render();
+            $userController->show_user_list();
         }
         break;
 
@@ -29,4 +29,3 @@ switch ($uri) {
         break;
 }
 
-require_once "template/template.php";
