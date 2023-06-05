@@ -4,59 +4,54 @@ class UserModel
     private $out;
     private $col =  [
         [
-            'name' => 'id_task',
+            'name' => 'id',
             'type' => 'INT',
             'required' => true,
             'auto_increment' => true,
         ],
         [
-            'name' => 'task_name',
-            'type' => 'VARCHAR(255)',
+            'name' => 'nom',
+            'type' => 'VARCHAR(50)',
             'required' => true,
             'auto_increment' => false,
         ],
         [
-            'name' => 'num_task',
-            'type' => 'VARCHAR(255)',
+            'name' => 'prenom',
+            'type' => 'VARCHAR(50)',
             'required' => false,
             'auto_increment' => false,
         ],
         [
-            'name' => 'id_type_task',
-            'type' => 'INT',
+            'name' => 'age',
+            'type' => 'BIGINT',
             'required' => true,
             'auto_increment' => false,
         ],
         [
-            'name' => 'nbr_before',
-            'type' => 'INT default 0',
-            'required' => false,
-            'auto_increment' => false,
-        ],
-        [
-            'name' => 'nbr_after',
-            'type' => 'INT default 0',
-            'required' => false,
-            'auto_increment' => false,
-        ],
-        [
-            'name' => 'id', // user Id
-            'type' => 'INT',
+            'name' => 'civilite',
+            'type' => 'ENUM',
+            'values' => ['Mr', 'Mme', 'Mlle'],
             'required' => true,
             'auto_increment' => false,
         ],
         [
-            'name' => 'start_time',
-            'type' => 'DATETIME',
+            'name' => 'email',
+            'type' => 'VARCHAR(50)',
             'required' => false,
             'auto_increment' => false,
         ],
         [
-            'name' => 'total_duration',
-            'type' => 'INT default 0',
-            'required' => false,
+            'name' => 'adresse',
+            'type' => 'VARCHAR(50)',
+            'required' => true,
             'auto_increment' => false,
         ],
+        [
+            'name' => 'tel',
+            'type' => 'VARCHAR(50)',
+            'required' => false,
+            'auto_increment' => false,
+        ]
     ];
 
     private $tableManipulator;
@@ -64,12 +59,10 @@ class UserModel
     public function __construct()
     {
         $this->tableManipulator = new TableManipulator();
-        $this->tableManipulator->createTable("users",$this->col);
+        $this->tableManipulator->createTable("users", $this->col);
     }
 
-    private function getUser(){
-
+    private function getUser()
+    {
     }
-
-    
 }

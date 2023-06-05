@@ -14,13 +14,11 @@ $userController = new UserController();
 
 switch ($uri) {
     case '/':
-        if (isset($_GET)) {
-            http_response_code(200);
-            $userController->show_user_list();
-        }
+        $userController->show_user_list();
         break;
 
-    case '/list':
+    case '/create':
+        $userController::show_user_form_create();
         break;
 
     default:
@@ -28,4 +26,3 @@ switch ($uri) {
         include_once "views/page_not_found.php";
         break;
 }
-
