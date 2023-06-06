@@ -18,6 +18,9 @@ class UserController
 
     public static function show_user_form_create()
     {
+        if(isset($_POST["name"])){
+            TemplateRenderer::setMessage("user boom");
+        }
         echo UserViews::renderUserForm();
     }
 }

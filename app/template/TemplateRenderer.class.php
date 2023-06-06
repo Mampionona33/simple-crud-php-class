@@ -1,10 +1,13 @@
 <?php
 class TemplateRenderer
 {
-    public static function render($title = "Document", $content = null, $navbarContent = null, $sidebarContent = null, $message = null, $errorMessage = null)
+    private static $message;
+    private static $errorMessage;
+
+    public static function render($title = "Document", $content = null, $navbarContent = null, $sidebarContent = null)
     {
         ob_start();
-?>
+        ?>
         <!DOCTYPE html>
         <html lang="fr">
 
@@ -18,17 +21,43 @@ class TemplateRenderer
 
         <body>
             <div class="container">
-                <?php echo $message ? "<div class=\"message_container\">$message</div>" : null; ?>
-                <?php echo $errorMessage ? "<div class=\"erreur_container\">$errorMessage</div>" : null; ?>
-                <?php echo $navbarContent ? "<div class=\"navbar\">$navbarContent</div>" : null; ?>
-                <?php echo $sidebarContent ? "<div class=\"sidebar\">$sidebarContent</div>" : null; ?>
-                <?php echo $content ? "<div class=\"content\">$content</div>" : null; ?>
+                <?php echo self::renderMessage(self::$message); ?>
+                <?php echo self::renderErrorMessage(self::$errorMessage); ?>
+                <?php echo $navbarContent; ?>
+                <?php echo $sidebarContent; ?>
+                <?php echo $content; ?>
             </div>
             <script src="../dist/app-bundle.js"></script>
         </body>
 
         </html>
-<?php
+        <?php
         return ob_get_clean();
+    }
+
+    public static function setMessage($message)
+    {
+        self::$message = $message;
+    }
+
+    public static function setError($errorMessage)
+    {
+        self::$errorMessage = $errorMessage;
+    }
+
+    private static function renderMessage($message)
+    {
+        if ($message) {
+            return "<div class=\"message_container\">$message</div>";
+        }
+        return null;
+    }
+
+    private static function renderErrorMessage($errorMessage)
+    {
+        if ($errorMessage) {
+            return "<div class=\"erreur_container\">$errorMessage</div>";
+        }
+        return null;
     }
 }
