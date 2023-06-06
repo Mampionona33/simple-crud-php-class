@@ -41,7 +41,7 @@ class UserModel
             'auto_increment' => false,
         ],
         [
-            'name' => 'adresse',
+            'name' => 'address',
             'type' => 'VARCHAR(50)',
             'required' => true,
             'auto_increment' => false,
@@ -55,14 +55,21 @@ class UserModel
     ];
 
     private $tableManipulator;
-
+    private $dataManipulator;
+    private static $nomTable = "users";
     public function __construct()
     {
         $this->tableManipulator = new TableManipulator();
         $this->tableManipulator->createTable("users", $this->col);
+        $this->dataManipulator = new DataManipulator();
     }
 
     private function getUser()
     {
+    }
+
+    public function createUser($data)
+    {
+        return $this->dataManipulator->createData(self::$nomTable, $data);
     }
 }

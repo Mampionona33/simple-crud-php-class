@@ -18,7 +18,7 @@ switch ($uri) {
         break;
 
     case '/create':
-        $userController::show_user_form_create();
+        $userController->show_user_form_create();
         break;
 
     default:
