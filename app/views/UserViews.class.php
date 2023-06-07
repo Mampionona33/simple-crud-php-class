@@ -62,7 +62,10 @@ class UserViews
         }
     }
 
-    public static function renderUserList()
+    public static function renderUserList($data = [])
     {
+        $header = ["id", "nom", "prenom", "date de naissance", "civilité", "adresse", "email", "tel"];
+        $userCustomTable = new CustomTable($header, $data);
+        return TemplateRenderer::render("List", $userCustomTable->renderTable());
     }
 }

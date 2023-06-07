@@ -64,8 +64,10 @@ class UserModel
         $this->dataManipulator = new DataManipulator();
     }
 
-    private function getUser()
+    public function getUser()
     {
+        $userList = $this->dataManipulator->getData(self::$nomTable);
+        return $userList;
     }
 
     public function createUser($data)
