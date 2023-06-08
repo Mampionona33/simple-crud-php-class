@@ -38,7 +38,7 @@ class CustomTable
             <div class="container">
                 <table class="table table-bordered table-striped">
                     <thead>
-                        <tr>$tableHeaders</tr>
+                        <tr class="text-uppercase table-dark" >$tableHeaders</tr>
                     </thead>
                     <tbody>
                         $tableBody

@@ -3,8 +3,9 @@ class TemplateRenderer
 {
     private static $message;
     private static $errorMessage;
+    private static $navbarContent;
 
-    public static function render($title = "Document", $content = null, $navbarContent = null, $sidebarContent = null)
+    public static function render($title = "Document", $content = null, $sidebarContent = null)
     {
         ob_start();
 ?>
@@ -23,10 +24,10 @@ class TemplateRenderer
         </head>
 
         <body>
+            <?php echo self::renderNavbar(self::$navbarContent) ?>
             <div class="container">
                 <?php echo self::renderMessage(self::$message); ?>
                 <?php echo self::renderErrorMessage(self::$errorMessage); ?>
-                <?php echo $navbarContent; ?>
                 <?php echo $sidebarContent; ?>
                 <?php echo $content; ?>
             </div>
@@ -43,6 +44,11 @@ class TemplateRenderer
         self::$message = $message;
     }
 
+    public static function setNavbarContent($navbarContent)
+    {
+        self::$navbarContent = $navbarContent;
+    }
+
     public static function setError($errorMessage)
     {
         self::$errorMessage = $errorMessage;
@@ -52,6 +58,13 @@ class TemplateRenderer
     {
         if ($message) {
             return "<div class=\"message_container\">$message</div>";
+        }
+        return null;
+    }
+    private static function renderNavbar($navBar)
+    {
+        if ($navBar) {
+            return "<nav class=\"navbar navbar-expand-lg navbar-dark bg-dark fixed-top ps-4 text-capitalize\">$navBar</nav>";
         }
         return null;
     }
