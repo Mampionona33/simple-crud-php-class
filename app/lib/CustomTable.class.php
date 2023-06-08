@@ -3,9 +3,10 @@ class CustomTable
 {
     private $header;
     private $data;
+
     public function __construct($header = [], $data = [])
     {
-        $this->header =  $header;
+        $this->header = $header;
         $this->data = $data;
     }
 
@@ -33,14 +34,18 @@ class CustomTable
         }
 
         return <<<HTML
-        <table>
-            <thead>
-                <tr>$tableHeaders</tr>
-            </thead>
-            <tbody>
-                $tableBody
-            </tbody>
-        </table>
+        <div class="d-flex align-items-center justify-content-center vh-100">
+            <div class="container">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>$tableHeaders</tr>
+                    </thead>
+                    <tbody>
+                        $tableBody
+                    </tbody>
+                </table>
+            </div>
+        </div>
         HTML;
     }
 }

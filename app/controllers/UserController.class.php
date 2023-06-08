@@ -15,14 +15,14 @@ class UserController
     public function show_user_list()
     {
         $userList = $this->userModels->getUser();
-        foreach ($userList as $key => $value) {
-            $tempAge = $value["age"];
-            unset($value["age"]);
-            // var_dump($tempAge);
-            // $value["age"] = $this->ageInSecToBirthday($value["age"]);
+        $tempUserList = [];
+        foreach ($userList as $user) {
+            $tempAge = $user["age"];
+            unset($user["age"]);
+            $user["age"] = $this->ageInSecToBirthday($tempAge);
+            $tempUserList[] = $user;
         }
-        var_dump($userList);
-        echo UserViews::renderUserList($userList);
+        echo UserViews::renderUserList($tempUserList);
     }
 
     public function show_user_form_create()

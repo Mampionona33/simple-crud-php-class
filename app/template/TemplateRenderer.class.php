@@ -7,7 +7,7 @@ class TemplateRenderer
     public static function render($title = "Document", $content = null, $navbarContent = null, $sidebarContent = null)
     {
         ob_start();
-        ?>
+?>
         <!DOCTYPE html>
         <html lang="fr">
 
@@ -17,6 +17,9 @@ class TemplateRenderer
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link rel="stylesheet" href="../dist/style.css">
             <title><?php echo $title; ?></title>
+            <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+            <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+
         </head>
 
         <body>
@@ -31,7 +34,7 @@ class TemplateRenderer
         </body>
 
         </html>
-        <?php
+<?php
         return ob_get_clean();
     }
 
