@@ -41,8 +41,8 @@ class UserController
             unset($data["name"], $data["lastName"], $data["birthday"]);
 
             if ($this->userModels->createUser($data)) {
-                TemplateRenderer::setMessage("user boom");
-                header("Refresh:2, /create");
+                TemplateRenderer::setMessage("The user creates successfully.");
+                header("Refresh:3, /");
             } else {
                 TemplateRenderer::setError("Error on creatting user");
             }

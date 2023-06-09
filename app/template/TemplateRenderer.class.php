@@ -25,8 +25,8 @@ class TemplateRenderer
 
         <body>
             <?php echo self::renderNavbar(self::$navbarContent) ?>
+            <?php echo self::renderMessage(self::$message); ?>
             <div class="container">
-                <?php echo self::renderMessage(self::$message); ?>
                 <?php echo self::renderErrorMessage(self::$errorMessage); ?>
                 <?php echo $sidebarContent; ?>
                 <?php echo $content; ?>
@@ -57,7 +57,20 @@ class TemplateRenderer
     private static function renderMessage($message)
     {
         if ($message) {
-            return "<div class=\"message_container\">$message</div>";
+            return '
+            <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                    <strong class="me-auto">Bootstrap</strong>
+                    <small>11 mins ago</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">'
+                . $message .
+                '</div>
+                </div>
+                </div>
+            ';
         }
         return null;
     }
