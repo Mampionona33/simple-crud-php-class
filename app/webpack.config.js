@@ -2,6 +2,7 @@
 
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const autoprefixer = require("autoprefixer");
 
 const isProduction = process.env.NODE_ENV == "production";
 
@@ -38,9 +39,19 @@ const config = {
           MiniCssExtractPlugin.loader,
           {
             loader: "css-loader",
-            options: { importLoaders: 2 },
+            options: {
+              importLoaders: 2,
+            },
           },
-          "postcss-loader",
+          {
+            // Loader for webpack to process CSS with PostCSS
+            loader: "postcss-loader",
+            options: {
+              postcssOptions: {
+                plugins: () => [autoprefixer],
+              },
+            },
+          },
           "sass-loader",
         ],
       },

@@ -41,8 +41,8 @@ class UserController
             unset($data["name"], $data["lastName"], $data["birthday"]);
 
             if ($this->userModels->createUser($data)) {
-                TemplateRenderer::setMessage("The user creates successfully.");
-                header("Refresh:3, /");
+                TemplateRenderer::setMessage("User creation", "The user creates successfully.");
+                header("Refresh:4, /");
             } else {
                 TemplateRenderer::setError("Error on creatting user");
             }
@@ -70,7 +70,7 @@ class UserController
     {
         $currentTimestamp = time();
         $birthTimestamp = $currentTimestamp - $age;
-        $birthDate = date('Y-m-d H:i:s', $birthTimestamp);
+        $birthDate = date('Y-m-d', $birthTimestamp);
         return $birthDate;
     }
 }

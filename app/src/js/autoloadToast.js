@@ -1,9 +1,9 @@
-export const autoloadToast = () => {
-  const toastLiveExample = document.getElementById("liveToast");
-  const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
+import { Toast } from "bootstrap";
 
-  if (toastLiveExample) {
-    console.log("live toaster");
+export const autoloadToast = () => {
+  const toastLive = document.getElementById("liveToast");
+  const toastBootstrap = Toast.getOrCreateInstance(toastLive);
+  if (toastLive) {
     toastBootstrap.show();
   }
 };

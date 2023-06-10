@@ -83,7 +83,8 @@ class UserViews
                         <label class="form-check-label" for="Mlle">Mlle</label>
                     </div>
                 </fieldset>
-                <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-center gap-3">
+                    <input type="reset" value="Recommencer" class="btn btn-secondary">
                     <input type="submit" value="$submitButton" class="btn btn-primary">
                 </div>
             </form>

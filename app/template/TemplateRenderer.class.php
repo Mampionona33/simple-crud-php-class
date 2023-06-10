@@ -2,6 +2,7 @@
 class TemplateRenderer
 {
     private static $message;
+    private static $msgTitle;
     private static $errorMessage;
     private static $navbarContent;
 
@@ -18,14 +19,12 @@ class TemplateRenderer
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link rel="stylesheet" href="../dist/style.css">
             <title><?php echo $title; ?></title>
-            <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
-            <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 
         </head>
 
         <body>
             <?php echo self::renderNavbar(self::$navbarContent) ?>
-            <?php echo self::renderMessage(self::$message); ?>
+            <?php echo self::renderMessage(self::$msgTitle, self::$message); ?>
             <div class="container">
                 <?php echo self::renderErrorMessage(self::$errorMessage); ?>
                 <?php echo $sidebarContent; ?>
@@ -39,8 +38,9 @@ class TemplateRenderer
         return ob_get_clean();
     }
 
-    public static function setMessage($message)
+    public static function setMessage($msgTitle, $message)
     {
+        self::$msgTitle = $msgTitle;
         self::$message = $message;
     }
 
@@ -54,18 +54,18 @@ class TemplateRenderer
         self::$errorMessage = $errorMessage;
     }
 
-    private static function renderMessage($message)
+    private static function renderMessage($msgTitle, $message)
     {
         if ($message) {
             return '
-            <div class="toast-container position-fixed bottom-0 end-0 p-3">
+            <div class="toast-container position-fixed bottom-0 end-0 p-3 ">
                 <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header">
-                    <strong class="me-auto">Bootstrap</strong>
-                    <small>11 mins ago</small>
+                    <strong class="me-auto">' . $msgTitle . '</strong>
+                    <small>Now</small>
                     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
-                    <div class="toast-body">'
+                    <div class="toast-body text-bg-primary">'
                 . $message .
                 '</div>
                 </div>
