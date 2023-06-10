@@ -12,7 +12,7 @@ class UserViews
     {
     }
 
-    public static function renderUserForm($userData = [])
+    public static function renderUserForm(array $userData = []): string
     {
         $name = isset($userData['name']) ? $userData['name'] : '';
         $lastName = isset($userData['lastName']) ? $userData['lastName'] : '';
@@ -100,10 +100,13 @@ HTML;
         }
     }
 
-    public static function renderUserList($data = [])
+    public static function renderUserList(array $data = []): string
     {
-        $header = ["id", "nom", "prenom", "civilité", "email", "adresse", "tel", "date de naissance", "actions"];
+        $header = ["id", "nom", "prenom", "civilité", "email", "adresse", "tel", "date de naissance"];
         $userCustomTable = new CustomTable($header, $data);
+        $userCustomTable->setBtnEditeState(true);
+        $userCustomTable->setBtnDatailState(true);
+        $userCustomTable->setBtnDeleteState(true);
         TemplateRenderer::setNavbarContent(self::$userNavBar);
         return TemplateRenderer::render("List", $userCustomTable->renderTable());
     }
