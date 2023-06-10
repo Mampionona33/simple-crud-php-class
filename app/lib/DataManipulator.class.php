@@ -1,14 +1,12 @@
 <?php
-
-require_once "./connect_db.php";
-
 class DataManipulator
 {
     private $db;
 
     public function __construct()
     {
-        $this->db = connect_db();
+        $dataBase = new DataBase();
+        $this->db = $dataBase->connect();
     }
 
     public function createData($tableName, $data)
@@ -65,4 +63,3 @@ class DataManipulator
         }
     }
 }
-?>

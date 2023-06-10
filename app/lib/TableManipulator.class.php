@@ -1,13 +1,12 @@
 <?php
-require_once "./connect_db.php";
-
 class TableManipulator
 {
     private $db;
 
     public function __construct()
     {
-        $this->db = connect_db();
+        $dataBase = new DataBase();
+        $this->db = $dataBase->connect();
     }
 
     public function createTable($tableName, $columns)
