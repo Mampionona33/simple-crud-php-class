@@ -31,7 +31,7 @@ class DataManipulator
         }
     }
 
-    public function getData($tableName, $columns = [], $condition = "")
+    public function getData(string $tableName, array $columns = [], string $condition = ""): array
     {
         $query = "SELECT";
 

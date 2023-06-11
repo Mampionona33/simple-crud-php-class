@@ -12,9 +12,9 @@ class LoginViews
             <div class="">
                 <form method="POST" class="rounded shadow p-4">
                     <div class="form-group row">
-                        <label for="name" class="col-sm-3 col-form-label" >Identifiant</label>
+                        <label for="email" class="col-sm-3 col-form-label" >Identifiant</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control form-control-sm" name="name" id="name" placeholder="exemple@email.com" required>
+                            <input type="text" class="form-control form-control-sm" name="email" id="email" placeholder="exemple@email.com" required>
                         </div>
                     </div>
                     <div class="form-group row">

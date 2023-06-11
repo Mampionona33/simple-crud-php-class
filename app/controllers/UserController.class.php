@@ -44,7 +44,7 @@ class UserController
                 TemplateRenderer::setMessage("User creation", "The user creates successfully.");
                 header("Refresh:4, /");
             } else {
-                TemplateRenderer::setError("Error on creatting user");
+                TemplateRenderer::setError("Error creat user", "Error on creatting user");
             }
         }
         echo UserViews::renderUserForm();

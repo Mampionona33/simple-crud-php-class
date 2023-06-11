@@ -27,7 +27,7 @@ switch ($uri) {
         // $userController->show_user_form_create();
         break;
 
-    case '/operator/dashboard':
+    case '/operator/dashboard/':
         echo "operator";
         break;
 

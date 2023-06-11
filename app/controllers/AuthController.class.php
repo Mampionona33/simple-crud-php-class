@@ -21,7 +21,7 @@ class AuthController
             }
         } else {
             $role = $_SESSION["user"]["role"];
-            $id = $_SESSION["user"]["id"];
+            $id = $_SESSION["user"]["id_user"];
             if ($role === "operator") {
                 if ($pathname === '/') {
                     header("Location: /operator/dashboard?id=$id");
@@ -40,9 +40,20 @@ class AuthController
     {
         $usersModel = new UsersModel();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (isset($_POST["email"])) {
-                $authUser = $usersModel->getUserByEmail($_POST["email"]);
-                var_dump($authUser);
+            if (isset($_POST["email"]) && isset($_POST["password"])) {
+                $authUser = $usersModel->getUserByEmail($_POST);
+                if (count($authUser) > 0) {
+                    $userRole = $authUser[0]["role"];
+                    if (preg_match('/admin/i', $userRole)) {
+                        $_SESSION['user'] = $authUser[0];
+                        header("Location: /admin/dashboard?id=" . $authUser[0]['id_user']);
+                        exit();
+                    } else {
+                        TemplateRenderer::setError("Authentication Error", "User is not an admin");
+                    }
+                } else {
+                    TemplateRenderer::setError("Authentication Error", "User does not exist");
+                }
             }
         }
         return LoginViews::render();

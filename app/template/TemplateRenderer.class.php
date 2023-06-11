@@ -4,6 +4,7 @@ class TemplateRenderer
     private static $message;
     private static $msgTitle;
     private static $errorMessage;
+    private static $errorTitle;
     private static $navbarContent;
 
     public static function render($title = "Document", $content = null, $sidebarContent = null)
@@ -23,10 +24,10 @@ class TemplateRenderer
         </head>
 
         <body>
-            <?php echo self::renderNavbar(self::$navbarContent) ?>
-            <?php echo self::renderMessage(self::$msgTitle, self::$message); ?>
+            <?php echo self::renderNavbar() ?>
+            <?php echo self::renderMessage(); ?>
+            <?php echo self::renderErrorMessage(); ?>
             <div class="container">
-                <?php echo self::renderErrorMessage(self::$errorMessage); ?>
                 <?php echo $sidebarContent; ?>
                 <?php echo $content; ?>
             </div>
@@ -38,35 +39,36 @@ class TemplateRenderer
         return ob_get_clean();
     }
 
-    public static function setMessage($msgTitle, $message)
+    public static function setMessage($msgTitle, $message): void
     {
         self::$msgTitle = $msgTitle;
         self::$message = $message;
     }
 
-    public static function setNavbarContent($navbarContent)
+    public static function setNavbarContent($navbarContent): void
     {
         self::$navbarContent = $navbarContent;
     }
 
-    public static function setError($errorMessage)
+    public static function setError($errorTitle, $errorMessage): void
     {
+        self::$errorTitle = $errorTitle;
         self::$errorMessage = $errorMessage;
     }
 
-    private static function renderMessage($msgTitle, $message)
+    private static function renderMessage()
     {
-        if ($message) {
+        if (self::$message) {
             return '
             <div class="toast-container position-fixed bottom-0 end-0 p-3 ">
                 <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header">
-                    <strong class="me-auto">' . $msgTitle . '</strong>
+                    <strong class="me-auto">' . self::$msgTitle . '</strong>
                     <small>Now</small>
                     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body text-bg-primary">'
-                . $message .
+                . self::$message .
                 '</div>
                 </div>
                 </div>
@@ -74,18 +76,30 @@ class TemplateRenderer
         }
         return null;
     }
-    private static function renderNavbar($navBar)
+    private static function renderNavbar()
     {
-        if ($navBar) {
-            return "<nav class=\"navbar navbar-expand-lg navbar-dark bg-dark fixed-top ps-4 text-capitalize\">$navBar</nav>";
+        if (self::$navbarContent) {
+            return '<nav class=\"navbar navbar-expand-lg navbar-dark bg-dark fixed-top ps-4 text-capitalize\">' . self::$navbarContent . '</nav>';
         }
         return null;
     }
 
-    private static function renderErrorMessage($errorMessage)
+    private static function renderErrorMessage()
     {
-        if ($errorMessage) {
-            return "<div class=\"erreur_container\">$errorMessage</div>";
+        if (self::$errorMessage) {
+            return '
+            <div class="toast-container position-fixed bottom-0 end-0 p-3 ">
+            <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                <strong class="me-auto">' . self::$errorTitle . '</strong>
+                <small>Now</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body text-bg-danger">'
+                . self::$errorMessage .
+                '</div>
+            </div>
+            </div>';
         }
         return null;
     }

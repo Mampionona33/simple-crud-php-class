@@ -80,13 +80,12 @@ class UsersModel
 
     public function getUser()
     {
-        $userList = $this->dataManipulator->getData(self::$nomTable);
-        return $userList;
+        return  $this->dataManipulator->getData(self::$nomTable);
     }
 
     public function getUserByEmail(array $data): array
     {
-        $condition = 'WHERE email $data["email"]';
+        $condition = "email = '" . $data["email"] . "'";
         return $this->dataManipulator->getData(self::$nomTable, [], $condition);
     }
 
