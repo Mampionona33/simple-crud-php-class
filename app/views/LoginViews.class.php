@@ -1,11 +1,19 @@
 <?php
 class LoginViews
 {
+    private $templateRenderer;
+
     public function __construct()
     {
     }
 
-    private static function loginForm(): string
+    public function setTemplateRenderer($templateRenderer)
+    {
+        $this->templateRenderer = $templateRenderer;
+    }
+
+
+    private function loginForm(): string
     {
         return <<<HTML
         <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
@@ -14,7 +22,7 @@ class LoginViews
                     <div class="form-group row">
                         <label for="email" class="col-sm-3 col-form-label" >Identifiant</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control form-control-sm" name="email" id="email" placeholder="exemple@email.com" required>
+                            <input type="email" class="form-control form-control-sm" name="email" id="email" placeholder="exemple@email.com" required>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -32,8 +40,8 @@ class LoginViews
         HTML;
     }
 
-    public static function render()
+    public function render()
     {
-        return  TemplateRenderer::render("Login", self::loginForm());
+        return $this->templateRenderer->render("Login", $this->loginForm());
     }
 }

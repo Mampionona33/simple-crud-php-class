@@ -1,11 +1,17 @@
 <?php
 class AuthController
 {
+    private $templateRenderer;
     public function __construct()
     {
     }
 
-    public static function sessionController()
+    public function setTemplateRenderer($templateRenderer)
+    {
+        $this->templateRenderer = $templateRenderer;
+    }
+
+    public function sessionController()
     {
         session_start();
         $pathname = $_SERVER["REQUEST_URI"];
@@ -36,12 +42,14 @@ class AuthController
         }
     }
 
-    public static function login(): string
+    public function login(): string
     {
         $usersModel = new UsersModel();
+        $loginViews = new LoginViews();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST["email"]) && isset($_POST["password"])) {
                 $authUser = $usersModel->getUserByEmail($_POST);
+                // var_dump($authUser);
                 if (count($authUser) > 0) {
                     $userRole = $authUser[0]["role"];
                     if (preg_match('/admin/i', $userRole)) {
@@ -49,13 +57,15 @@ class AuthController
                         header("Location: /admin/dashboard?id=" . $authUser[0]['id_user']);
                         exit();
                     } else {
-                        TemplateRenderer::setError("Authentication Error", "User is not an admin");
+                        $this->templateRenderer->setError("Authentication Error", "User is not an admin");
                     }
                 } else {
-                    TemplateRenderer::setError("Authentication Error", "User does not exist");
+                    $this->templateRenderer->setError("Authentication Error", "Identifiant ou mots de passe incorrecte");
+                    header("Refresh: 3 /login");
                 }
             }
         }
-        return LoginViews::render();
+        $loginViews->setTemplateRenderer($this->templateRenderer);
+        return $loginViews->render();
     }
 }

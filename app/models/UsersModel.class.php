@@ -85,7 +85,7 @@ class UsersModel
 
     public function getUserByEmail(array $data): array
     {
-        $condition = "email = '" . $data["email"] . "'";
+        $condition = "email = '" . $data["email"] . "' AND password = '" . $data["password"] . "'";
         return $this->dataManipulator->getData(self::$nomTable, [], $condition);
     }
 

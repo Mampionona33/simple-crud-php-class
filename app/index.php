@@ -8,11 +8,21 @@ require __DIR__ . "/lib/class_autoloader.php";
 spl_autoload_register('class_autoloader');
 // ----------------------------
 
+
 $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
 // $userController = new UserController();
-AuthController::sessionController();
+$templateRenderer = new TemplateRenderer();
+
+
+$authController = new AuthController();
+$authController->setTemplateRenderer($templateRenderer);
+$authController->sessionController();
+
 $usersController = new UsersController();
+
+$adminController = new AdminController();
+$adminController->setTemplateRenderer($templateRenderer);
 
 switch ($uri) {
     case '/':
@@ -20,7 +30,7 @@ switch ($uri) {
         break;
 
     case '/login':
-        echo AuthController::login();
+        echo $authController->login();
         break;
 
     case '/create':
@@ -32,7 +42,7 @@ switch ($uri) {
         break;
 
     case '/admin/dashboard':
-        echo "admin";
+        echo  $adminController->Dashboard();
         break;
 
     default:

@@ -1,13 +1,13 @@
 <?php
 class TemplateRenderer
 {
-    private static $message;
-    private static $msgTitle;
-    private static $errorMessage;
-    private static $errorTitle;
-    private static $navbarContent;
+    private $message;
+    private $msgTitle;
+    private $errorMessage;
+    private $errorTitle;
+    private $navbarContent;
 
-    public static function render($title = "Document", $content = null, $sidebarContent = null)
+    public function render($title = "Document", $content = null, $sidebarContent = null)
     {
         ob_start();
 ?>
@@ -24,9 +24,9 @@ class TemplateRenderer
         </head>
 
         <body>
-            <?php echo self::renderNavbar() ?>
-            <?php echo self::renderMessage(); ?>
-            <?php echo self::renderErrorMessage(); ?>
+            <?php echo $this->renderNavbar() ?>
+            <?php echo $this->renderMessage(); ?>
+            <?php echo $this->errorMessage ? $this->renderErrorMessage() : null; ?>
             <div class="container">
                 <?php echo $sidebarContent; ?>
                 <?php echo $content; ?>
@@ -39,36 +39,36 @@ class TemplateRenderer
         return ob_get_clean();
     }
 
-    public static function setMessage($msgTitle, $message): void
+    public function setMessage($msgTitle, $message): void
     {
-        self::$msgTitle = $msgTitle;
-        self::$message = $message;
+        $this->msgTitle = $msgTitle;
+        $this->message = $message;
     }
 
-    public static function setNavbarContent($navbarContent): void
+    public function setNavbarContent($navbarContent): void
     {
-        self::$navbarContent = $navbarContent;
+        $this->navbarContent = $navbarContent;
     }
 
-    public static function setError($errorTitle, $errorMessage): void
+    public function setError($errorTitle, $errorMessage): void
     {
-        self::$errorTitle = $errorTitle;
-        self::$errorMessage = $errorMessage;
+        $this->errorTitle = $errorTitle;
+        $this->errorMessage = $errorMessage;
     }
 
-    private static function renderMessage()
+    private function renderMessage()
     {
-        if (self::$message) {
+        if ($this->message) {
             return '
             <div class="toast-container position-fixed bottom-0 end-0 p-3 ">
                 <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header">
-                    <strong class="me-auto">' . self::$msgTitle . '</strong>
+                    <strong class="me-auto">' . $this->msgTitle . '</strong>
                     <small>Now</small>
                     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body text-bg-primary">'
-                . self::$message .
+                . $this->message .
                 '</div>
                 </div>
                 </div>
@@ -76,30 +76,31 @@ class TemplateRenderer
         }
         return null;
     }
-    private static function renderNavbar()
+
+    private function renderNavbar()
     {
-        if (self::$navbarContent) {
-            return '<nav class=\"navbar navbar-expand-lg navbar-dark bg-dark fixed-top ps-4 text-capitalize\">' . self::$navbarContent . '</nav>';
+        if ($this->navbarContent) {
+            return '<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top ps-4 text-capitalize">' . $this->navbarContent . '</nav>';
         }
         return null;
     }
 
-    private static function renderErrorMessage()
+    private function renderErrorMessage()
     {
-        if (self::$errorMessage) {
+        if ($this->errorMessage) {
             return '
-            <div class="toast-container position-fixed bottom-0 end-0 p-3 ">
+        <div class="toast-container position-fixed bottom-0 end-0 p-3 ">
             <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
-                <strong class="me-auto">' . self::$errorTitle . '</strong>
-                <small>Now</small>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    <strong class="me-auto">' . $this->errorTitle . '</strong>
+                    <small>Now</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
                 <div class="toast-body text-bg-danger">'
-                . self::$errorMessage .
+                . $this->errorMessage .
                 '</div>
             </div>
-            </div>';
+        </div>';
         }
         return null;
     }
