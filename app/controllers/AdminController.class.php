@@ -5,9 +5,9 @@ class AdminController
     private $usersModel;
     private $templateRenderer;
     private $adminView;
+    private $adminNavbar;
 
-
-    public function setTemplateRenderer($templateRenderer)
+    public function setTemplateRenderer(TemplateRenderer $templateRenderer)
     {
         $this->templateRenderer = $templateRenderer;
     }
@@ -16,6 +16,7 @@ class AdminController
     {
         $this->adminView = new AdminView();
         $this->usersModel = new UsersModel();
+        $this->adminNavbar = new AdminNavbar();
     }
 
     public function Dashboard(): string
@@ -25,6 +26,8 @@ class AdminController
                 $userList = $this->usersModel->getUser();
                 unset($userList[0]["password"]);
                 $pageContent = $this->adminView->tableUser($userList);
+
+                $this->templateRenderer->setNavbarContent($this->adminNavbar->render());
                 return $this->templateRenderer->render("Dashboard", $pageContent);
             } else {
                 return $this->templateRenderer->render("Dashboard", "Accès non autorisé : l'utilisateur n'est pas un utilisateur régulier.");

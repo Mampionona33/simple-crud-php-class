@@ -41,6 +41,10 @@ switch ($uri) {
         echo "operator";
         break;
 
+    case '/logout':
+        $authController->logout();
+        break;
+
     case '/admin/dashboard':
         echo  $adminController->Dashboard();
         break;

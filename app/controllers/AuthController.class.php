@@ -6,7 +6,7 @@ class AuthController
     {
     }
 
-    public function setTemplateRenderer($templateRenderer)
+    public function setTemplateRenderer(TemplateRenderer $templateRenderer)
     {
         $this->templateRenderer = $templateRenderer;
     }
@@ -49,7 +49,6 @@ class AuthController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST["email"]) && isset($_POST["password"])) {
                 $authUser = $usersModel->getUserByEmail($_POST);
-                // var_dump($authUser);
                 if (count($authUser) > 0) {
                     $userRole = $authUser[0]["role"];
                     if (preg_match('/admin/i', $userRole)) {
@@ -67,5 +66,12 @@ class AuthController
         }
         $loginViews->setTemplateRenderer($this->templateRenderer);
         return $loginViews->render();
+    }
+
+    public function logout()
+    {
+        session_destroy();
+        header("Location: /login");
+        exit();
     }
 }
