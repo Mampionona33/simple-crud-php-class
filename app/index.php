@@ -10,15 +10,29 @@ spl_autoload_register('class_autoloader');
 
 $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
-$userController = new UserController();
+// $userController = new UserController();
+AuthController::sessionController();
+$usersController = new UsersController();
 
 switch ($uri) {
     case '/':
-        $userController->show_user_list();
+        echo "home";
+        break;
+
+    case '/login':
+        echo AuthController::login();
         break;
 
     case '/create':
-        $userController->show_user_form_create();
+        // $userController->show_user_form_create();
+        break;
+
+    case '/operator/dashboard':
+        echo "operator";
+        break;
+
+    case '/admin/dashboard':
+        echo "admin";
         break;
 
     default:

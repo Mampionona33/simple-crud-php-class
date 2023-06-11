@@ -1,10 +1,10 @@
 <?php
-class UserModel
+class UsersModel
 {
     private $out;
     private $col =  [
         [
-            'name' => 'id',
+            'name' => 'id_user',
             'type' => 'INT',
             'required' => true,
             'auto_increment' => true,
@@ -24,14 +24,14 @@ class UserModel
         [
             'name' => 'age',
             'type' => 'BIGINT',
-            'required' => true,
+            'required' => false,
             'auto_increment' => false,
         ],
         [
             'name' => 'civilite',
             'type' => 'ENUM',
             'values' => ['Mr', 'Mme', 'Mlle'],
-            'required' => true,
+            'required' => false,
             'auto_increment' => false,
         ],
         [
@@ -43,7 +43,7 @@ class UserModel
         [
             'name' => 'address',
             'type' => 'VARCHAR(50)',
-            'required' => true,
+            'required' => false,
             'auto_increment' => false,
         ],
         [
@@ -51,16 +51,30 @@ class UserModel
             'type' => 'VARCHAR(50)',
             'required' => false,
             'auto_increment' => false,
-        ]
+        ],
+        [
+            'name' => 'password',
+            'type' => 'VARCHAR(255)',
+            'required' => false,
+            'auto_increment' => false,
+        ],
+        [
+            'name' => 'role',
+            'type' => 'ENUM',
+            'values' => ['operator', 'admin'],
+            'required' => true,
+            'auto_increment' => false,
+        ],
     ];
 
     private $tableManipulator;
     private $dataManipulator;
-    private static $nomTable = "users";
+    private static $nomTable = "users_";
+
     public function __construct()
     {
         $this->tableManipulator = new TableManipulator();
-        $this->tableManipulator->createTable("users", $this->col);
+        $this->tableManipulator->createTable(self::$nomTable, $this->col);
         $this->dataManipulator = new DataManipulator();
     }
 
@@ -70,7 +84,12 @@ class UserModel
         return $userList;
     }
 
-   
+    public function getUserByEmail(array $data): array
+    {
+        $condition = 'WHERE email $data["email"]';
+        return $this->dataManipulator->getData(self::$nomTable, [], $condition);
+    }
+
     public function createUser($data)
     {
         return $this->dataManipulator->createData(self::$nomTable, $data);
