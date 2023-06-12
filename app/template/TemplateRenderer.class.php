@@ -6,6 +6,7 @@ class TemplateRenderer
     private $errorMessage;
     private $errorTitle;
     private $navbarContent;
+    private $modalContent;
 
     public function render($title = "Document", $content = null, $sidebarContent = null)
     {
@@ -26,6 +27,7 @@ class TemplateRenderer
         <body>
             <?php echo $this->renderNavbar() ?>
             <?php echo $this->renderMessage(); ?>
+            <?php echo $this->renderModal(); ?>
             <?php echo $this->errorMessage ? $this->renderErrorMessage() : null; ?>
             <div class="container">
                 <?php echo $sidebarContent; ?>
@@ -48,6 +50,10 @@ class TemplateRenderer
     public function setNavbarContent($navbarContent): void
     {
         $this->navbarContent = $navbarContent;
+    }
+    public function setModalContent($modalContent): void
+    {
+        $this->modalContent = $modalContent;
     }
 
     public function setError($errorTitle, $errorMessage): void
@@ -85,6 +91,13 @@ class TemplateRenderer
         return null;
     }
 
+    private function renderModal(){
+        if($this->modalContent){
+            $modal = new Modal($this->modalContent);
+            return $modal->render();
+        }
+    }
+
     private function renderErrorMessage()
     {
         if ($this->errorMessage) {
@@ -104,4 +117,5 @@ class TemplateRenderer
         }
         return null;
     }
+   
 }

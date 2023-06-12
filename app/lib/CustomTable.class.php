@@ -38,7 +38,7 @@ class CustomTable
     {
         $output = '';
         if (preg_match('/edit/i', $btnType)) {
-            $output .= '<button type="button" id=btnEdit' . $id . ' name="delete_one" data-id=' . $id . ' class="btn btn-primary">Edit</button>';
+            $output .= '<button type="button" id="btnEdit' . $id . '" name="edit" data-bs-id="' . $id . '" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal">Edit</button>';
         }
         if (preg_match('/details/i', $btnType)) {
             $output .= '<button type="button" id=btnDetails' . $id . ' name="details" data-id=' . $id . ' class="btn btn-primary">Details</button>';

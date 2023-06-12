@@ -27,6 +27,8 @@ class AdminController
                 unset($userList[0]["password"]);
                 $pageContent = $this->adminView->tableUser($userList);
 
+                $this->templateRenderer->setModalContent("test 13");
+
                 $this->templateRenderer->setNavbarContent($this->adminNavbar->render());
                 return $this->templateRenderer->render("Dashboard", $pageContent);
             } else {
