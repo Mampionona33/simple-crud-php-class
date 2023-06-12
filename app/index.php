@@ -49,6 +49,11 @@ switch ($uri) {
         echo  $adminController->Dashboard();
         break;
 
+    case '/api/user/':
+        
+        break;
+
+
     default:
         http_response_code(404);
         include_once "views/page_not_found.php";

@@ -26,14 +26,18 @@ class AdminController
                 $userList = $this->usersModel->getUser();
                 unset($userList[0]["password"]);
                 $pageContent = $this->adminView->tableUser($userList);
-
-                $this->templateRenderer->setModalContent("test 13");
-
+                // $this->templateRenderer->setModalContent("test 13");
                 $this->templateRenderer->setNavbarContent($this->adminNavbar->render());
                 return $this->templateRenderer->render("Dashboard", $pageContent);
             } else {
                 return $this->templateRenderer->render("Dashboard", "Accès non autorisé : l'utilisateur n'est pas un utilisateur régulier.");
             }
         }
+
+       
+    }
+
+    private function handleEditUser(){
+        return "test";
     }
 }

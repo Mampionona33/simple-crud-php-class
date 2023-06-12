@@ -33,7 +33,7 @@ class TemplateRenderer
                 <?php echo $sidebarContent; ?>
                 <?php echo $content; ?>
             </div>
-            <script src="../dist/app-bundle.js"></script>
+            <script type="module" src="../dist/app-bundle.js"></script>
         </body>
 
         </html>
