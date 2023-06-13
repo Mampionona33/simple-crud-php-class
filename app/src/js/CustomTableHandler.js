@@ -23,7 +23,7 @@ export class CustomTableHandler {
 
         try {
           // Récupérer les données de l'API
-          const data = await this.fetchDataFromAPI(userId, currentBasedUrl);
+          const data = await this.fetchDataFromAPI(userId);
 
           // Générer le contenu du modal en utilisant les données appropriées
           const modalContent = generateModalContent("Edit", data);
@@ -33,8 +33,8 @@ export class CustomTableHandler {
           modalElement.classList.add("modal");
           modalElement.innerHTML = modalContent;
 
-          // Créer une instance du modal Bootstrap avec l'option backdrop:false
-          const modal = new Modal(modalElement, { backdrop: true });
+          // Créer une instance du modal Bootstrap avec l'option backdrop:true et keyboard:true
+          const modal = new Modal(modalElement, { backdrop: true, keyboard: true });
 
           // Ajouter un écouteur d'événements sur le bouton de fermeture du modal
           const closeButton = modalElement.querySelector(
@@ -44,6 +44,16 @@ export class CustomTableHandler {
             modal.hide();
             modalElement.remove();
           });
+
+          // Ajouter un écouteur d'événements au document pour supprimer le modal en cliquant à l'extérieur
+          const removeModalOnOutsideClick = function (event) {
+            if (!modalElement.contains(event.target)) {
+              modal.hide();
+              modalElement.remove();
+              document.removeEventListener("click", removeModalOnOutsideClick);
+            }
+          };
+          document.addEventListener("click", removeModalOnOutsideClick);
 
           // Afficher le modal
           modal.show();
@@ -55,7 +65,7 @@ export class CustomTableHandler {
   }
 
   // Méthode pour récupérer les données de l'API
-  async fetchDataFromAPI(userId, baseUrl) {
+  async fetchDataFromAPI(userId) {
     const apiUrl = `/api/user?userId=${userId}`;
 
     try {
