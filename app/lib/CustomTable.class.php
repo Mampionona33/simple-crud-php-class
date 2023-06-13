@@ -7,6 +7,8 @@ class CustomTable
     private $btnDeleteState;
     private $btnDetailsState = false;
     private $showColId = false;
+    private $searchBarState = false;
+    private $addButtonState = false;
 
     public function __construct(array $header = [], $data = [])
     {
@@ -34,14 +36,24 @@ class CustomTable
         $this->showColId = $showColId;
     }
 
+    public function setSearchBarVisible(bool $searchBarState): void
+    {
+        $this->searchBarState = $searchBarState;
+    }
+
+    public function setAddBtnVisible(bool $addButtonState): void
+    {
+        $this->addButtonState = $addButtonState;
+    }
+
     private function renderActionBtn(mixed $id, string $btnType): string
     {
         $output = '';
         if (preg_match('/edit/i', $btnType)) {
-            $output .= '<button type="button" id="btnEdit' . $id . '" name="edit" data-id="' . $id . '" class="btn btn-primary">Edit</button>';
+            $output .= '<button type="button" id="btnEdit' . $id . '" name="edit" data-id="' . $id . '" class="btn btn-primary ">Edit</button>';
         }
         if (preg_match('/details/i', $btnType)) {
-            $output .= '<button type="button" id=btnDetails' . $id . ' name="details" data-id=' . $id . ' class="btn btn-primary">Details</button>';
+            $output .= '<button type="button" id=btnDetails' . $id . ' name="details" data-id=' . $id . ' class="btn btn-info">Details</button>';
         }
         if (preg_match('/delete/i', $btnType)) {
             $output .= '<button type="button" id=btnDelete' . $id . ' name="delete" data-id=' . $id . ' class="btn btn-danger">Delete</button>';
@@ -49,11 +61,36 @@ class CustomTable
         return $output;
     }
 
+    private function renderSearchBar()
+    {
+        if ($this->searchBarState) {
+            return '
+                <form class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            ';
+        }
+        return null;
+    }
+
+    private function renderAddButton()
+    {
+        if ($this->addButtonState) {
+            return '
+                <button class="btn btn-primary">Add</button>
+            ';
+        }
+        return null;
+    }
+
     public function renderTable(): string
     {
 
         $btnEdit = '<button class="btn btn-primary">Edit</button>';
         $tableHeaders = "";
+        $searchBar = $this->renderSearchBar();
+        $addBtn = $this->renderAddButton();
 
         if ($this->showColId) {
             foreach ($this->header as $key => $value) {
@@ -89,7 +126,7 @@ class CustomTable
                 }
 
                 if ($this->btnEditState || $this->btnDetailsState || $this->btnDeleteState) {
-                    $tableBody .= '<td class="d-flex column-gap-3">';
+                    $tableBody .= '<td class="d-flex flex-wrap gap-3 justify-content-center">';
                     if ($this->btnEditState) {
                         $tableBody .= $this->renderActionBtn($id, "edit");
                     }
@@ -110,18 +147,26 @@ class CustomTable
         }
 
         return <<<HTML
-        <div class="d-flex align-items-center justify-content-center vh-100 ">
+        <div class="d-flex flex-column align-items-center justify-content-center vh-100">
             <div class="container">
-                <table class="table table-bordered table-striped shadow-sm">
-                    <thead>
-                        <tr class="text-uppercase table-dark">$tableHeaders</tr>
-                    </thead>
-                    <tbody>
-                        $tableBody
-                    </tbody>
-                </table>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    $searchBar
+                    $addBtn
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped shadow-sm">
+                        <thead>
+                            <tr class="text-uppercase table-dark">$tableHeaders</tr>
+                        </thead>
+                        <tbody>
+                            $tableBody
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         HTML;
     }
+
+    
 }

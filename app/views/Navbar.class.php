@@ -2,14 +2,30 @@
 class Navbar
 {
     private $options;
-    private  $navbar = <<<HTML
-        <div class="container-flui">
-            <a class="navbar-brand" href="/logout">log out</a>
-        </div>
-    HTML;
+    private $title;
 
-    public function render()
+    public function setTitle(string $title): void
     {
-        return $this->navbar;
+        $this->title = $title;
+    }
+
+    private function renderTitle()
+    {
+        if($this->title){
+            return '<div class="text-light fs-4">'.$this->title.'</div>';
+        }
+    }
+
+    public function render(): string
+    {
+        $title = $this->renderTitle();
+        return <<<HTML
+            <div class="container-fluid">
+                $title
+                <div class="d-flex justify-content-end">
+                    <a class="navbar-brand" href="/logout">log out</a>
+                </div>
+            </div>
+        HTML;
     }
 }

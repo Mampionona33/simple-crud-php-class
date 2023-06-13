@@ -9,5 +9,5 @@ autoloadToast();
 console.log("Hello World!!");
 
 // run table handler 
-const tableHandler = new CustomTableHandler();
-tableHandler.handleBtnEdit();
+const adminUserList = new CustomTableHandler();
+adminUserList.handleBtnEdit();

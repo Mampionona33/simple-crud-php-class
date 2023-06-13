@@ -28,6 +28,7 @@ class AuthController
         } else {
             $role = $_SESSION["user"]["role"];
             $id = $_SESSION["user"]["id_user"];
+            
             if ($role === "operator") {
                 if ($pathname === '/') {
                     header("Location: /operator/dashboard?id=$id");
@@ -56,10 +57,10 @@ class AuthController
                         header("Location: /admin/dashboard?id=" . $authUser[0]['id_user']);
                         exit();
                     } else {
-                        $this->templateRenderer->setError("Authentication Error", "User is not an admin");
+                        $this->templateRenderer->setError("Error", "User is not an admin");
                     }
                 } else {
-                    $this->templateRenderer->setError("Authentication Error", "Identifiant ou mots de passe incorrecte");
+                    $this->templateRenderer->setError("Error", "Identifiant ou mots de passe incorrecte");
                     header("Refresh: 3 /login");
                 }
             }

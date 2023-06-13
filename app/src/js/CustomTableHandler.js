@@ -4,41 +4,76 @@ export class CustomTableHandler {
   handleBtnEdit() {
     const editButtons = document.querySelectorAll('button[name="edit"]');
     editButtons.forEach((button) => {
-      button.addEventListener("click", function (ev) {
+      button.addEventListener("click", async (ev) => {
         ev.preventDefault();
         const rowId = parseInt(ev.target.dataset.id);
         const urlParams = new URLSearchParams(window.location.search);
+        const currentPort = window.location.port;
+        const currentHost = window.location.host;
+
+        let currentBasedUrl;
+
+        if (currentPort) {
+          currentBasedUrl = `${currentHost}:${currentPort}`;
+        } else {
+          currentBasedUrl = currentHost;
+        }
+
         const userId = urlParams.get("id");
 
-        // Générer le contenu du modal en utilisant les données appropriées
-        const modalContent = generateModalContent("Edit", rowId, userId);
+        try {
+          // Récupérer les données de l'API
+          const data = await this.fetchDataFromAPI(userId, currentBasedUrl);
 
-        // Créer un élément HTML pour le modal
-        const modalElement = document.createElement("div");
-        modalElement.classList.add("modal");
-        modalElement.innerHTML = modalContent;
+          // Générer le contenu du modal en utilisant les données appropriées
+          const modalContent = generateModalContent("Edit", data);
 
-        // Créer une instance du modal Bootstrap avec l'option backdrop:false
-        const modal = new Modal(modalElement, { backdrop: true });
+          // Créer un élément HTML pour le modal
+          const modalElement = document.createElement("div");
+          modalElement.classList.add("modal");
+          modalElement.innerHTML = modalContent;
 
-        // Ajouter un écouteur d'événements sur le bouton de fermeture du modal
-        const closeButton = modalElement.querySelector(
-          '[data-bs-dismiss="modal"]'
-        );
-        closeButton.addEventListener("click", function () {
-          modal.hide();
-          modalElement.remove();
-        });
+          // Créer une instance du modal Bootstrap avec l'option backdrop:false
+          const modal = new Modal(modalElement, { backdrop: true });
 
-        // Afficher le modal
-        modal.show();
+          // Ajouter un écouteur d'événements sur le bouton de fermeture du modal
+          const closeButton = modalElement.querySelector(
+            '[data-bs-dismiss="modal"]'
+          );
+          closeButton.addEventListener("click", function () {
+            modal.hide();
+            modalElement.remove();
+          });
+
+          // Afficher le modal
+          modal.show();
+        } catch (error) {
+          console.error(error);
+        }
       });
     });
+  }
+
+  // Méthode pour récupérer les données de l'API
+  async fetchDataFromAPI(userId, baseUrl) {
+    const apiUrl = `/api/user?userId=${userId}`;
+
+    try {
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error("Unable to fetch data from API.");
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 }
 
 // Fonction pour générer le contenu du modal en fonction des données
-function generateModalContent(title, rowId, userId) {
+function generateModalContent(title, data) {
   return `
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -47,62 +82,50 @@ function generateModalContent(title, rowId, userId) {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <!-- Contenu du formulaire d'édition -->
-                <div class="d-flex justify-content-center align-items-center"">
-                  <div class="col-9">
+                <!-- Contenu du formulaire d'édition -->
+                <div class="d-flex justify-content-center align-items-center">
+                    <div class="col-9">
                         <div class="form-group row">
-                            <label for="name" class="col-sm-3 col-form-label">Nom</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control form-control-sm" name="name" id="name" value="$name" required>
+                            <label for="name" class="col-sm-5 col-form-label">Nom</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control form-control-sm" value=${data["nom"]} name="name" id="name"  required>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="lastName" class="col-sm-3 col-form-label">Prénoms</label>
-                            <div class="col-sm-9">
-                                <input type="text" name="lastName" id="lastName" value="$lastName" required class="form-control form-control-sm">
+                            <label for="lastName" class="col-sm-5 col-form-label">Prénoms</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="lastName" id="lastName" value=${data["prenom"]}  required class="form-control form-control-sm">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="birthday" class="col-sm-3 col-form-label">Date de naissance</label>
-                            <div class="col-sm-9">
-                                <input type="date" name="birthday" id="birthday" value="$birthday" required class="form-control form-control-sm">
+                            <label for="email" class="col-sm-5 col-form-label">email</label>
+                            <div class="col-sm-7">
+                                <input type="email" name="email" id="email" value=${data["email"]}  required class="form-control form-control-sm">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="email" class="col-sm-3 col-form-label">Email</label>
-                            <div class="col-sm-9">
-                                <input type="email" name="email" id="email" value="$email" class="form-control form-control-sm">
+                            <label for="role" class="col-sm-5 col-form-label">Role</label>
+                            <div class="col-sm-7">
+                                <select name="role" id="role" class="form-control form-control-sm" required>
+                                    <option value="admin" ${data["role"] === "admin" ? 'selected' : ''}>Admin</option>
+                                    <option value="operator" ${data["role"] === "operator" ? 'selected' : ''}>Operator</option>
+                                </select>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="address" class="col-sm-3 col-form-label">Adresse</label>
-                            <div class="col-sm-9">
-                                <input type="text" name="address" id="address" value="$address" class="form-control form-control-sm">
+                            <label for="password" class="col-sm-5 col-form-label">password</label>
+                            <div class="col-sm-7">
+                                <input type="password" name="password" id="password" value=${data["password"]} required class="form-control form-control-sm">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="tel" class="col-sm-3 col-form-label">Tel</label>
-                            <div class="col-sm-9">
-                                <input type="tel" name="tel" id="tel" value="$tel" class="form-control form-control-sm">
+                            <label for="confirm_password" class="col-sm-5 col-form-label">Confirm password</label>
+                            <div class="col-sm-7">
+                                <input type="password" name="confirm_password" id="confirm_password" required class="form-control form-control-sm">
                             </div>
                         </div>
-                        <fieldset>
-                            <p class="form-label col-form-label">Sélectionnez la civilité</p>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" id="Mr" name="civilite" value="Mr" $civiliteMrChecked>
-                                <label class="form-check-label" for="Mr">Mr</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" id="Mme" name="civilite" value="Mme" $civiliteMmeChecked>
-                                <label class="form-check-label" for="Mme">Mme</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" id="Mlle" name="civilite" value="Mlle" $civiliteMlleChecked>
-                                <label class="form-check-label" for="Mlle">Mlle</label>
-                            </div>
-                        </fieldset>
-                  </div>
-              </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

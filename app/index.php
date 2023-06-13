@@ -3,17 +3,14 @@
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 // ----------------------------
-// Load automaticaly all class files
+// Load automatically all class files
 require __DIR__ . "/lib/class_autoloader.php";
 spl_autoload_register('class_autoloader');
 // ----------------------------
 
-
 $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
-// $userController = new UserController();
 $templateRenderer = new TemplateRenderer();
-
 
 $authController = new AuthController();
 $authController->setTemplateRenderer($templateRenderer);
@@ -23,6 +20,7 @@ $usersController = new UsersController();
 
 $adminController = new AdminController();
 $adminController->setTemplateRenderer($templateRenderer);
+
 
 switch ($uri) {
     case '/':
@@ -45,15 +43,19 @@ switch ($uri) {
         $authController->logout();
         break;
 
+        case '/api/user':
+            $userApi = new UserApi();
+            if (isset($_GET['userId'])) {
+                $userId = $_GET['userId'];
+                $userApi->getUser($userId);
+            } else {
+                $userApi->sendResponse(400, ['error' => 'Missing userId parameter']);
+            }
+            break;
+
     case '/admin/dashboard':
-        echo  $adminController->Dashboard();
+        echo $adminController->Dashboard();
         break;
-
-    case '/api/user/':
-        
-        break;
-
-
     default:
         http_response_code(404);
         include_once "views/page_not_found.php";

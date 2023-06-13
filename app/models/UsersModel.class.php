@@ -69,28 +69,39 @@ class UsersModel
 
     private $tableManipulator;
     private $dataManipulator;
-    private static $nomTable = "users_";
+    private $nomTable = "users_";
 
     public function __construct()
     {
         $this->tableManipulator = new TableManipulator();
-        $this->tableManipulator->createTable(self::$nomTable, $this->col);
+        $this->tableManipulator->createTable($this->nomTable, $this->col);
         $this->dataManipulator = new DataManipulator();
     }
 
-    public function getUser()
+    public function getUsers()
     {
-        return  $this->dataManipulator->getData(self::$nomTable);
+        return $this->dataManipulator->getData($this->nomTable);
+    }
+
+    public function getUser($userId)
+    {
+        $condition = "id_user = '$userId'";
+        $result = $this->dataManipulator->getData($this->nomTable, [], $condition);
+        if (!empty($result)) {
+            return $result[0];
+        } else {
+            return null;
+        }
     }
 
     public function getUserByEmail(array $data): array
     {
         $condition = "email = '" . $data["email"] . "' AND password = '" . $data["password"] . "'";
-        return $this->dataManipulator->getData(self::$nomTable, [], $condition);
+        return $this->dataManipulator->getData($this->nomTable, [], $condition);
     }
 
     public function createUser($data)
     {
-        return $this->dataManipulator->createData(self::$nomTable, $data);
+        return $this->dataManipulator->createData($this->nomTable, $data);
     }
 }
