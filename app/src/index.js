@@ -12,33 +12,33 @@ console.log("Hello World!!");
 const generateVoterForm = (data) => {
     return `
     <div class="form-group row">
-        <label for="name" class="col-sm-3 col-form-label">Nom</label>
-        <div class="col-sm-9">
-            <input type="text" class="form-control form-control-sm" name="name" id="name" value="${data["name"]}" required>
-        </div>
+    <label for="name" class="col-sm-3 col-form-label">Nom</label>
+    <div class="col-sm-9">
+        <input type="text" class="form-control form-control-sm" name="name" id="name" value="${data["name"] ? data["name"] : ""}" required>
+    </div>
     </div>
     <div class="form-group row">
         <label for="last_name" class="col-sm-3 col-form-label">Prénoms</label>
         <div class="col-sm-9">
-            <input type="text" name="last_name" id="last_name" value="${data["last_name"]}" required class="form-control form-control-sm">
+            <input type="text" name="last_name" id="last_name" value="${data["last_name"] ? data["last_name"] : ""}" required class="form-control form-control-sm">
         </div>
     </div>
     <div class="form-group row">
         <label for="birthday" class="col-sm-3 col-form-label">Date de naissance</label>
         <div class="col-sm-9">
-            <input type="text" name="birthday" id="birthday" value="${data["birthday"]}" required class="form-control form-control-sm">
+            <input type="text" name="birthday" id="birthday" value="${data["birthday"] ? data["birthday"] : ""}" required class="form-control form-control-sm">
         </div>
     </div>
     <div class="form-group row">
         <label for="adresse" class="col-sm-3 col-form-label">Adresse</label>
         <div class="col-sm-9">
-            <input type="text" name="adresse" id="adresse" value="${data["adresse"]}" required class="form-control form-control-sm">
+            <input type="text" name="adresse" id="adresse" value="${data["adresse"] ? data["adresse"] : ""}" required class="form-control form-control-sm">
         </div>
     </div>
     <fieldset>
         <p class="form-label col-form-label">Sélectionnez la civilité</p>
         <div class="form-check">
-            <input class="form-check-input" type="radio" id="Mr" name="civilite" value="Mr" ${data["civility"] === "Mr" ? "checked" : ""}>
+            <input class="form-check-input" type="radio" id="Mr" name="civilite" value="Mr" ${data["civility"] === "Mr" ? "checked" : "checked"}>
             <label class="form-check-label" for="Mr">Mr</label>
         </div>
         <div class="form-check">
@@ -50,11 +50,11 @@ const generateVoterForm = (data) => {
             <label class="form-check-label" for="Mlle">Mlle</label>
         </div>
     </fieldset>
+
     `;
 }
 
-const voterTableHandler = new CustomTableHandler();
-voterTableHandler.handleBtnEdit( generateVoterForm);
+const voterTableHandler = new CustomTableHandler(generateVoterForm);
 
 // const generateUserForm =(data)=>{
 //     return  `

@@ -81,7 +81,7 @@ class CustomTable
     {
         if ($this->addButtonState) {
             return '
-                <button class="btn btn-primary">Add</button>
+                <button id="table-btnAdd" class="btn btn-primary">Add</button>
             ';
         }
         return null;
