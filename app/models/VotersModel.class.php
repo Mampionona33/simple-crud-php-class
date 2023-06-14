@@ -63,4 +63,8 @@ class VotersModel
         return $this->dataManipulator->getData($this->tableName, [], $condition);
     }
 
+    public function createVoter(array $data)
+    {
+        return $this->dataManipulator->createData($this->tableName, $data);
+    }
 }

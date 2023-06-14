@@ -1,15 +1,13 @@
 import { Modal } from "bootstrap";
 
 export class CustomTableHandler {
-
-  constructor(formGenerator){
+  constructor(formGenerator) {
     this.formGenerator = formGenerator;
     this.handleBtnAdd(this.formGenerator);
     this.handleBtnEdit(this.formGenerator);
   }
 
   handleBtnEdit(formGenerator) {
-    
     const editButtons = document.querySelectorAll('button[name="edit"]');
     // Edit
     editButtons.forEach((button) => {
@@ -32,7 +30,10 @@ export class CustomTableHandler {
           const data = await this.fetchDataFromAPI(apiPath, rowId);
 
           // Générer le contenu du modal en utilisant les données appropriées
-          const modalContent = generateModalContent("Modifier l'électeur",formGenerator(data));
+          const modalContent = generateModalContent(
+            "Modifier l'électeur",
+            formGenerator(data)
+          );
 
           // Créer un élément HTML pour le modal
           const modalElement = document.createElement("div");
@@ -40,7 +41,10 @@ export class CustomTableHandler {
           modalElement.innerHTML = modalContent;
 
           // Créer une instance du modal Bootstrap avec l'option backdrop:true et keyboard:true
-          const modal = new Modal(modalElement, { backdrop: true, keyboard: true });
+          const modal = new Modal(modalElement, {
+            backdrop: true,
+            keyboard: true,
+          });
 
           // Ajouter un écouteur d'événements sur le bouton de fermeture du modal
           const closeButton = modalElement.querySelector(
@@ -68,27 +72,29 @@ export class CustomTableHandler {
         }
       });
     });
-
   }
 
   handleBtnAdd(formGenerator) {
     const addButton = document.getElementById("table-btnAdd");
     addButton.addEventListener("click", function (ev) {
       ev.preventDefault();
-  
+
       const modalElement = document.createElement("div");
       modalElement.classList.add("modal");
-      const modalContent = generateModalContent("Créer un électeur",formGenerator([]));
+      const modalContent = generateModalContent(
+        "Créer un électeur",
+        formGenerator([])
+      );
       modalElement.innerHTML = modalContent;
       document.body.appendChild(modalElement);
-  
+
       // Créer une instance du modal Bootstrap avec l'option backdrop:true et keyboard:true
       const modal = new Modal(modalElement, { backdrop: true, keyboard: true });
       modal.show();
 
       // Ajouter un écouteur d'événements sur le bouton de fermeture du modal
       const closeButton = modalElement.querySelector(
-      '[data-bs-dismiss="modal"]'
+        '[data-bs-dismiss="modal"]'
       );
 
       closeButton.addEventListener("click", function () {
@@ -99,13 +105,10 @@ export class CustomTableHandler {
       // Ajouter un écouteur d'événements sur l'événement "hide" du modal
       modalElement.addEventListener("hide.bs.modal", function () {
         modalElement.remove();
-    });
-
+      });
     });
   }
-  
-  
-  
+
   // Méthode pour récupérer les données de l'API
   async fetchDataFromAPI(apiUrl, id) {
     try {
@@ -141,7 +144,7 @@ function generateModalContent(title, formContent) {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-primary">Submit</button>
             </div>
         </div>
     </div>

@@ -53,8 +53,10 @@ switch ($uri) {
             if (isset($_GET['id_voter'])) {
                 $id_voter = $_GET['id_voter'];
                 $voterApi->getVoter($id_voter);
-            } else {
-                $voterApi->sendResponse(400, ['error' => 'Missing userId parameter']);
+            }
+            if (isset($_POST)) {
+                var_dump($_POST);
+                $voterApi->createVoter($_POST);
             }
         } else {
             http_response_code(404);
