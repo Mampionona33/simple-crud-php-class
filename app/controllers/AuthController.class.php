@@ -18,18 +18,6 @@ class AuthController
         // Supprimer les éventuels paramètres de requête de la fin du pathname
         $pathname = strtok($pathname, '?');
 
-        // Gestion d'api avant session control
-        // if (preg_match('/api/i', $pathname)) {
-        //     // setup api response for user
-        //     $voterApi = new VotersApi();
-        //     if (isset($_GET['id_voter'])) {
-        //         $id_voter = $_GET['id_voter'];
-        //         $voterApi->getVoter($id_voter);
-        //     } else {
-        //         $voterApi->sendResponse(400, ['error' => 'Missing userId parameter']);
-        //     }
-        // }
-
         // Vérifier si l'utilisateur est authentifié
         if (!isset($_SESSION["user"])) {
             // Rediriger vers la page de connexion

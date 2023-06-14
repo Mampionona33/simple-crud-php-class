@@ -52,7 +52,7 @@ class VotersModel
         $this->dataManipulator = new DataManipulator();
     }
 
-    public function getUsers(array $columns = [], string $condition = ""): array
+    public function getVoters(array $columns = [], string $condition = ""): array
     {
         return $this->dataManipulator->getData($this->tableName, $columns, $condition);
     }
