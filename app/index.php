@@ -21,10 +21,12 @@ $usersController = new UsersController();
 $adminController = new AdminController();
 $adminController->setTemplateRenderer($templateRenderer);
 
+$visitorController = new VisitorController($templateRenderer);
+
 
 switch ($uri) {
     case '/':
-        echo "home";
+        echo $visitorController->getVoters() ;
         break;
 
     case '/login':
@@ -43,15 +45,15 @@ switch ($uri) {
         $authController->logout();
         break;
 
-        case '/api/user':
-            $userApi = new UserApi();
-            if (isset($_GET['userId'])) {
-                $userId = $_GET['userId'];
-                $userApi->getUser($userId);
-            } else {
-                $userApi->sendResponse(400, ['error' => 'Missing userId parameter']);
-            }
-            break;
+    case '/api/user':
+        $userApi = new UserApi();
+        if (isset($_GET['userId'])) {
+            $userId = $_GET['userId'];
+            $userApi->getUser($userId);
+        } else {
+            $userApi->sendResponse(400, ['error' => 'Missing userId parameter']);
+        }
+        break;
 
     case '/admin/dashboard':
         echo $adminController->Dashboard();

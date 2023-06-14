@@ -7,11 +7,12 @@ class TemplateRenderer
     private $errorTitle;
     private $navbarContent;
     private $modalContent;
+    private $title;
 
     public function render($title = "Document", $content = null, $sidebarContent = null)
     {
         ob_start();
-?>
+        ?>
         <!DOCTYPE html>
         <html lang="fr">
 
@@ -20,7 +21,9 @@ class TemplateRenderer
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link rel="stylesheet" href="../dist/style.css">
-            <title><?php echo $title; ?></title>
+            <title>
+                <?php echo $title; ?>
+            </title>
 
         </head>
 
@@ -37,9 +40,11 @@ class TemplateRenderer
         </body>
 
         </html>
-<?php
+        <?php
         return ob_get_clean();
     }
+
+
 
     public function setMessage($msgTitle, $message): void
     {
@@ -91,8 +96,9 @@ class TemplateRenderer
         return null;
     }
 
-    private function renderModal(){
-        if($this->modalContent){
+    private function renderModal()
+    {
+        if ($this->modalContent) {
             $modal = new Modal($this->modalContent);
             return $modal->render();
         }
@@ -117,5 +123,5 @@ class TemplateRenderer
         }
         return null;
     }
-   
+
 }
