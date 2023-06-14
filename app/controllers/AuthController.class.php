@@ -59,6 +59,10 @@ class AuthController
                         $_SESSION['user'] = $authUser[0];
                         header("Location: /admin/dashboard?id=" . $authUser[0]['id_user']);
                         exit();
+                    } elseif (preg_match('/operator/i', $userRole)) {
+                        $_SESSION['user'] = $authUser[0];
+                        header("Location: /operator/dashboard?id=" . $authUser[0]['id_user']);
+                        exit();
                     } else {
                         $this->templateRenderer->setError("Error", "User is not an admin");
                     }

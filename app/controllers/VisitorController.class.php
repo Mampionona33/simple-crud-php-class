@@ -4,7 +4,7 @@ class VisitorController extends AbstractUserController
 
     private $votersModel;
     private $templateRenderer;
-    private $tableVoters;
+    protected $tableVoters;
 
     public function __construct(TemplateRenderer $templateRenderer)
     {
@@ -23,7 +23,8 @@ class VisitorController extends AbstractUserController
         // Create table voters
         $listUsers = $this->votersModel->getVoters($columns, $condition);
         $this->tableVoters->setBtnDetailsVisible(true);
-        // $this->tableVoters->setBtnEditVisible(true);
+        $navbar = new Navbar();
+        $this->templateRenderer->setNavbarContent($navbar->render());
         return $this->templateRenderer->render("List électeurs", $this->tableVoters->renderTable($listUsers));
     }
 }

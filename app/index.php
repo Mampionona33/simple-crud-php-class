@@ -23,6 +23,8 @@ $adminController->setTemplateRenderer($templateRenderer);
 
 $visitorController = new VisitorController($templateRenderer);
 
+$operatorController = new OperatorController($templateRenderer);
+
 
 switch ($uri) {
     case '/':
@@ -37,8 +39,8 @@ switch ($uri) {
         // $userController->show_user_form_create();
         break;
 
-    case '/operator/dashboard/':
-        echo "operator";
+    case '/operator/dashboard':
+        echo $operatorController->getVoters();
         break;
 
     case '/logout':
