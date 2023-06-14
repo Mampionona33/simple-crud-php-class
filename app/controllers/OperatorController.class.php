@@ -5,6 +5,7 @@ class OperatorController extends VisitorController
     {
         $this->tableVoters->setBtnEditVisible(true);
         $this->tableVoters->setAddBtnVisible(true);
+        $this->tableVoters->setBtnDeleteVisible(true);
         return parent::getVoters($columns, $condition);
     }
 }

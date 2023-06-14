@@ -16,14 +16,22 @@ class Navbar
         }
     }
 
+    private function logButton() : string {
+        if(!isset($_SESSION["user"])){
+            return '<a class="navbar-brand" href="/login">login</a>';
+        }
+        return '<a class="navbar-brand" href="/logout">log out</a>';
+    }
+
     public function render(): string
     {
+        $logButton = $this->logButton();
         $title = $this->renderTitle();
         return <<<HTML
             <div class="container-fluid">
                 $title
                 <div class="d-flex justify-content-end">
-                    <a class="navbar-brand" href="/logout">log out</a>
+                   $logButton
                 </div>
             </div>
         HTML;
