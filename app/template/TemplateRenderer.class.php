@@ -9,7 +9,7 @@ class TemplateRenderer
     private $modalContent;
     private $title;
 
-    public function render($title = "Document", $content = null, $sidebarContent = null)
+    public function render($title = "Document", $content = null, $sidebarContent = null): string
     {
         ob_start();
         ?>
@@ -43,8 +43,6 @@ class TemplateRenderer
         <?php
         return ob_get_clean();
     }
-
-
 
     public function setMessage($msgTitle, $message): void
     {

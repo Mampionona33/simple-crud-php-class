@@ -23,7 +23,7 @@ class VisitorController extends AbstractUserController
         // Create table voters
         $listUsers = $this->votersModel->getUsers($columns, $condition);
         $this->tableVoters->setBtnDetailsVisible(true);
-        $outpoutPage = $this->templateRenderer->render("List électeurs", $this->tableVoters->renderTable($listUsers));
-        return $outpoutPage;
+        $this->tableVoters->setBtnEditVisible(true);
+        return $this->templateRenderer->render("List électeurs", $this->tableVoters->renderTable($listUsers));
     }
 }

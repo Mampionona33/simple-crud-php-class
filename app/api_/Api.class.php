@@ -1,5 +1,6 @@
 <?php
-class Api{
+class Api
+{
     public function sendResponse($statusCode, $data)
     {
         http_response_code($statusCode);

@@ -1,16 +1,16 @@
 import { Modal } from "bootstrap";
 
 export class CustomTableHandler {
-  handleBtnEdit() {
+  handleBtnEdit(apiUrl, formGenerator) {
+    
     const editButtons = document.querySelectorAll('button[name="edit"]');
+    
     editButtons.forEach((button) => {
       button.addEventListener("click", async (ev) => {
         ev.preventDefault();
         const rowId = parseInt(ev.target.dataset.id);
-        const urlParams = new URLSearchParams(window.location.search);
         const currentPort = window.location.port;
         const currentHost = window.location.host;
-
         let currentBasedUrl;
 
         if (currentPort) {
@@ -19,14 +19,12 @@ export class CustomTableHandler {
           currentBasedUrl = currentHost;
         }
 
-        const userId = urlParams.get("id");
-
         try {
           // Récupérer les données de l'API
-          const data = await this.fetchDataFromAPI(userId);
+          const data = await this.fetchDataFromAPI(apiUrl, rowId);
 
           // Générer le contenu du modal en utilisant les données appropriées
-          const modalContent = generateModalContent("Edit", data);
+          const modalContent = generateModalContent("Edit",formGenerator(data));
 
           // Créer un élément HTML pour le modal
           const modalElement = document.createElement("div");
@@ -65,16 +63,14 @@ export class CustomTableHandler {
   }
 
   // Méthode pour récupérer les données de l'API
-  async fetchDataFromAPI(userId) {
-    const apiUrl = `/api/user?userId=${userId}`;
-
+  async fetchDataFromAPI(apiUrl, id) {
     try {
-      const response = await fetch(apiUrl);
+      const response = await fetch(`/api/${apiUrl}=${id}`);
       if (!response.ok) {
         throw new Error("Unable to fetch data from API.");
       }
       const data = await response.json();
-      return data;
+      return data[0];
     } catch (error) {
       console.error(error);
       throw error;
@@ -82,8 +78,8 @@ export class CustomTableHandler {
   }
 }
 
-// Fonction pour générer le contenu du modal en fonction des données
-function generateModalContent(title, data) {
+// Fonction pour générer le contenu du modal en fonction des données et du formulaire
+function generateModalContent(title, formContent) {
   return `
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -95,45 +91,7 @@ function generateModalContent(title, data) {
                 <!-- Contenu du formulaire d'édition -->
                 <div class="d-flex justify-content-center align-items-center">
                     <div class="col-9">
-                        <div class="form-group row">
-                            <label for="name" class="col-sm-5 col-form-label">Nom</label>
-                            <div class="col-sm-7">
-                                <input type="text" class="form-control form-control-sm" value=${data["nom"]} name="name" id="name"  required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="lastName" class="col-sm-5 col-form-label">Prénoms</label>
-                            <div class="col-sm-7">
-                                <input type="text" name="lastName" id="lastName" value=${data["prenom"]}  required class="form-control form-control-sm">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="email" class="col-sm-5 col-form-label">email</label>
-                            <div class="col-sm-7">
-                                <input type="email" name="email" id="email" value=${data["email"]}  required class="form-control form-control-sm">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="role" class="col-sm-5 col-form-label">Role</label>
-                            <div class="col-sm-7">
-                                <select name="role" id="role" class="form-control form-control-sm" required>
-                                    <option value="admin" ${data["role"] === "admin" ? 'selected' : ''}>Admin</option>
-                                    <option value="operator" ${data["role"] === "operator" ? 'selected' : ''}>Operator</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="password" class="col-sm-5 col-form-label">password</label>
-                            <div class="col-sm-7">
-                                <input type="password" name="password" id="password" value=${data["password"]} required class="form-control form-control-sm">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="confirm_password" class="col-sm-5 col-form-label">Confirm password</label>
-                            <div class="col-sm-7">
-                                <input type="password" name="confirm_password" id="confirm_password" required class="form-control form-control-sm">
-                            </div>
-                        </div>
+                        ${formContent}
                     </div>
                 </div>
             </div>

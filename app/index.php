@@ -26,7 +26,7 @@ $visitorController = new VisitorController($templateRenderer);
 
 switch ($uri) {
     case '/':
-        echo $visitorController->getVoters() ;
+        echo $visitorController->getVoters();
         break;
 
     case '/login':
@@ -45,21 +45,18 @@ switch ($uri) {
         $authController->logout();
         break;
 
-    case '/api/user':
-        $userApi = new UserApi();
-        if (isset($_GET['userId'])) {
-            $userId = $_GET['userId'];
-            $userApi->getUser($userId);
-        } else {
-            $userApi->sendResponse(400, ['error' => 'Missing userId parameter']);
-        }
-        break;
-
-    case '/admin/dashboard':
-        echo $adminController->Dashboard();
-        break;
     default:
-        http_response_code(404);
-        include_once "views/page_not_found.php";
+        if (preg_match('/api/i', $uri)) {
+            $voterApi = new VotersApi();
+            if (isset($_GET['id_voter'])) {
+                $id_voter = $_GET['id_voter'];
+                $voterApi->getVoter($id_voter);
+            } else {
+                $voterApi->sendResponse(400, ['error' => 'Missing userId parameter']);
+            }
+        } else {
+            http_response_code(404);
+            include_once "views/page_not_found.php";
+        }
         break;
 }
