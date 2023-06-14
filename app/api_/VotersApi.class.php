@@ -25,9 +25,16 @@ class VotersApi extends Api
 
     public function createVoter($data)
     {
-        if ($this->votersModel->createVoter($data)) {
-            $this->sendResponse(201, $data);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $createdVoter = $this->votersModel->createVoter($data);
+            if ($createdVoter) {
+                $this->sendResponse(201, $createdVoter);
+                return;
+            }
+            $this->sendResponse(500, ['error' => 'Error creating voter']);
+            return;
         }
-        $this->sendResponse(404, ['error' => 'Error on creating voter']);
+
+        $this->sendResponse(400, ['error' => 'Invalid request']);
     }
 }

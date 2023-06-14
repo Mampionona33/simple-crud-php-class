@@ -90,7 +90,13 @@ export class CustomTableHandler {
 
       // Créer une instance du modal Bootstrap avec l'option backdrop:true et keyboard:true
       const modal = new Modal(modalElement, { backdrop: true, keyboard: true });
+
       modal.show();
+
+      const submitButton = modalElement.querySelector("#submit_modal");
+      submitButton.addEventListener("click", function () {
+        handleSubmit(modalElement);
+      });
 
       // Ajouter un écouteur d'événements sur le bouton de fermeture du modal
       const closeButton = modalElement.querySelector(
@@ -123,12 +129,52 @@ export class CustomTableHandler {
       throw error;
     }
   }
+
+  async postDataToApi(apiUrl, postData) {
+    try {
+      const response = await fetch(`/api/${apiUrl}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(postData),
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+}
+
+async function handleSubmit(modalElement) {
+  const form = modalElement.querySelector("form");
+  const formData = new FormData(form);
+  const postData = {};
+  for (const [key, value] of formData.entries()) {
+    postData[key] = value;
+  }
+
+  try {
+    const response = await fetch(`/api/voter`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(postData),
+    });
+    const data = await response.json();
+    if (response.status === 201) {
+      // Rafraîchir la page si la création a réussi (statut 201)
+      window.location.reload();
+    }
+    console.log(response.status);
+    return data;
+  } catch (error) {
+    throw error;
+  }
 }
 
 // Fonction pour générer le contenu du modal en fonction des données et du formulaire
 function generateModalContent(title, formContent) {
   return `
-    <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">${title}</h5>
@@ -144,9 +190,9 @@ function generateModalContent(title, formContent) {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Submit</button>
+                <button type="button" id="submit_modal" class="btn btn-primary">Submit</button>
             </div>
         </div>
-    </div>
+    </form>
     `;
 }

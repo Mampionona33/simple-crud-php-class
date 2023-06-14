@@ -50,13 +50,18 @@ switch ($uri) {
     default:
         if (preg_match('/api/i', $uri)) {
             $voterApi = new VotersApi();
-            if (isset($_GET['id_voter'])) {
-                $id_voter = $_GET['id_voter'];
-                $voterApi->getVoter($id_voter);
-            }
-            if (isset($_POST)) {
-                var_dump($_POST);
-                $voterApi->createVoter($_POST);
+            if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+                if (isset($_GET['id_voter'])) {
+                    $id_voter = $_GET['id_voter'];
+                    $voterApi->getVoter($id_voter);
+                }
+            } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $requestData = json_decode(file_get_contents('php://input'), true);
+                $voterApi->createVoter($requestData);
+            } else {
+                http_response_code(400);
+                header('Content-Type: application/json');
+                echo json_encode(['error' => 'Invalid request method']);
             }
         } else {
             http_response_code(404);
