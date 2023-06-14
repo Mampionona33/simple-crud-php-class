@@ -1,7 +1,7 @@
 import { Modal } from "bootstrap";
 
 export class CustomTableHandler {
-  handleBtnEdit(apiUrl, formGenerator) {
+  handleBtnEdit(formGenerator) {
     
     const editButtons = document.querySelectorAll('button[name="edit"]');
     
@@ -9,9 +9,12 @@ export class CustomTableHandler {
       button.addEventListener("click", async (ev) => {
         ev.preventDefault();
         const rowId = parseInt(ev.target.dataset.id);
+        const apiPath = ev.target.dataset.apiPath;
         const currentPort = window.location.port;
         const currentHost = window.location.host;
         let currentBasedUrl;
+
+        console.log(ev.target.dataset);
 
         if (currentPort) {
           currentBasedUrl = `${currentHost}:${currentPort}`;
@@ -21,7 +24,7 @@ export class CustomTableHandler {
 
         try {
           // Récupérer les données de l'API
-          const data = await this.fetchDataFromAPI(apiUrl, rowId);
+          const data = await this.fetchDataFromAPI(apiPath, rowId);
 
           // Générer le contenu du modal en utilisant les données appropriées
           const modalContent = generateModalContent("Edit",formGenerator(data));

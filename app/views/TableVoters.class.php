@@ -10,7 +10,7 @@ final class TableVoters
     public function renderTable(array $data): string
     {
         $tableHeaders = ["id_voter", "Nom", "Prenoms", "date de naissance", "adresse", "civilité"];
-        $tableVisitor = new CustomTable($tableHeaders, $data);
+        $tableVisitor = new CustomTable("voter?id_voter", $tableHeaders, $data);
         $this->btnDetails && $tableVisitor->setBtnDatailState($this->btnDetails);
         $this->searchBar && $tableVisitor->setSearchBarVisible($this->searchBar);
         $this->btnAdd && $tableVisitor->setAddBtnVisible($this->btnAdd);
