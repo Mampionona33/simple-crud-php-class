@@ -25,8 +25,15 @@ class VotersApi extends Api
 
     public function createVoter($data)
     {
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $createdVoter = $this->votersModel->createVoter($data);
+            if (!$this->voterExist($data)) {
+                $createdVoter = $this->votersModel->createVoter($data);
+            } else {
+                $this->sendResponse(401, "Duplicate voter");
+                return;
+            }
+
             if ($createdVoter) {
                 $this->sendResponse(201, $createdVoter);
                 return;
@@ -36,5 +43,15 @@ class VotersApi extends Api
         }
 
         $this->sendResponse(400, ['error' => 'Invalid request']);
+    }
+
+    private function voterExist($data): bool
+    {
+        $condition = "WHERE name='" . $data["name"] . "'";
+        $voter = $this->votersModel->getVoters([], $condition);
+        if (!$voter) {
+            return false;
+        }
+        return true;
     }
 }
