@@ -1,4 +1,5 @@
-import { Modal } from "bootstrap";
+import { Modal, Toast } from "bootstrap";
+import { CustomToast } from "./CustomToast";
 
 export class CustomTableHandler {
   constructor(formGenerator) {
@@ -93,9 +94,33 @@ export class CustomTableHandler {
 
       modal.show();
 
+      // SHOW TOAST
+      const toastElement = document.createElement("div");
+      toastElement.classList.add("customToast");
+      const toastContent = new CustomToast("Utilisateur créé avec succès");
+      toastElement.innerHTML = toastContent.renderToast();
+      document.body.appendChild(toastElement);
+      const liveToast = document.getElementById("liveToast")
+
+      const toast = new Toast(liveToast);
+
       const submitButton = modalElement.querySelector("#submit_modal");
-      submitButton.addEventListener("click", function () {
-        handleSubmit(modalElement);
+      
+      submitButton.addEventListener("click", async function () {
+        try {
+          const data = await handleSubmit(modalElement);
+          if (data && data.status === 201) {
+            modal.hide();
+            modalElement.remove();
+            toast.show();
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      });
+
+      liveToast.addEventListener("hidden.bs.toast", function () {
+        window.location.reload();
       });
 
       // Ajouter un écouteur d'événements sur le bouton de fermeture du modal
@@ -160,11 +185,11 @@ async function handleSubmit(modalElement) {
       body: JSON.stringify(postData),
     });
     const data = await response.json();
+    data.status = response.status;
+
     if (response.status === 201) {
-      // Rafraîchir la page si la création a réussi (statut 201)
-      window.location.reload();
+      // window.location.reload();
     }
-    console.log(response.status);
     return data;
   } catch (error) {
     throw error;
