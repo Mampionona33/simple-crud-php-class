@@ -113,6 +113,9 @@ export class CustomTableHandler {
             modal.hide();
             modalElement.remove();
             toast.show();
+            setTimeout(function() {
+              toast.hide();
+            }, 1500);
           }
         } catch (error) {
           console.error(error);
