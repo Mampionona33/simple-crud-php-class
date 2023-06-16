@@ -37,9 +37,7 @@ export class CustomTableHandler {
           );
 
           // Créer un élément HTML pour le modal
-          const modalElement = document.createElement("div");
-          modalElement.classList.add("modal");
-          modalElement.innerHTML = modalContent;
+          const modalElement = createModalElement(modalContent);
 
           // Créer une instance du modal Bootstrap avec l'option backdrop:true et keyboard:true
           const modal = new Modal(modalElement, {
@@ -77,16 +75,15 @@ export class CustomTableHandler {
 
   handleBtnAdd(formGenerator) {
     const addButton = document.getElementById("table-btnAdd");
-    addButton.addEventListener("click", function (ev) {
+    addButton.addEventListener("click", async (ev) => {
       ev.preventDefault();
 
-      const modalElement = document.createElement("div");
-      modalElement.classList.add("modal");
       const modalContent = generateModalContent(
         "Créer un électeur",
         formGenerator([])
       );
-      modalElement.innerHTML = modalContent;
+
+      const modalElement = createModalElement(modalContent);
       document.body.appendChild(modalElement);
 
       // Créer une instance du modal Bootstrap avec l'option backdrop:true et keyboard:true
@@ -94,67 +91,21 @@ export class CustomTableHandler {
 
       modal.show();
 
-      
-
       const submitButton = modalElement.querySelector("#submit_modal");
 
       submitButton.addEventListener("click", async function () {
         try {
           const data = await handleSubmit(modalElement);
           if (data && data.status === 201) {
-            modal.hide();
-            modalElement.remove();
-
-            // SHOW TOAST
-            const toastElement = document.createElement("div");
-            toastElement.classList.add("customToast");
-            const toastContent = new CustomToast(data.message);
-            toastElement.innerHTML = toastContent.renderToast();
-            document.body.appendChild(toastElement);
-            const liveToast = document.getElementById("liveToast");
-
-            const toast = new Toast(liveToast);
-
-
-            toast.show();
-            setTimeout(function () {
-              toast.hide();
-            }, 2000);
-
-            liveToast.addEventListener("hidden.bs.toast", function () {
-              window.location.reload();
-            });
-
-          }
-          if(data && data.status === 401){
-            modal.hide();
-            modalElement.remove();
-
-            // SHOW TOAST
-            const toastElement = document.createElement("div");
-            toastElement.classList.add("customToast");
-            const toastContent = new CustomToast(data.error);
-            toastElement.innerHTML = toastContent.renderToast();
-            document.body.appendChild(toastElement);
-            const liveToast = document.getElementById("liveToast");
-
-            const toast = new Toast(liveToast);
-
-
-            toast.show();
-            setTimeout(function () {
-              toast.hide();
-            }, 2000);
-
-            liveToast.addEventListener("hidden.bs.toast", function () {
-              window.location.reload();
-            });
+            closeModal(modal, modalElement);
+            showSuccessToast(data.message);
+          } else if (data && data.status === 401) {
+            showErrorToast(data.error);
           }
         } catch (error) {
           console.error(error);
         }
       });
-
       
 
       // Ajouter un écouteur d'événements sur le bouton de fermeture du modal
@@ -163,8 +114,7 @@ export class CustomTableHandler {
       );
 
       closeButton.addEventListener("click", function () {
-        modal.hide();
-        modalElement.remove();
+        closeModal(modal, modalElement);
       });
 
       // Ajouter un écouteur d'événements sur l'événement "hide" du modal
@@ -202,8 +152,11 @@ export class CustomTableHandler {
       throw error;
     }
   }
+
 }
 
+
+// End of class start simple functions
 async function handleSubmit(modalElement) {
   const form = modalElement.querySelector("form");
   const formData = new FormData(form);
@@ -227,7 +180,6 @@ async function handleSubmit(modalElement) {
   }
 }
 
-// Fonction pour générer le contenu du modal en fonction des données et du formulaire
 function generateModalContent(title, formContent) {
   return `
     <form class="modal-dialog modal-dialog-centered">
@@ -251,4 +203,52 @@ function generateModalContent(title, formContent) {
         </div>
     </form>
     `;
+}
+
+function createModalElement(content) {
+  const modalElement = document.createElement("div");
+  modalElement.classList.add("modal");
+  modalElement.innerHTML = content;
+  return modalElement;
+}
+
+function closeModal(modal, modalElement) {
+  modal.hide();
+  modalElement.remove();
+}
+
+function showSuccessToast(message) {
+  const toastElement = document.createElement("div");
+  toastElement.classList.add("customToast");
+  const toastContent = new CustomToast(message,"success");
+  toastElement.innerHTML = toastContent.renderToast();
+  document.body.appendChild(toastElement);
+  const liveToast = document.getElementById("liveToast");
+  const toast = new Toast(liveToast);
+  toast.show();
+  setTimeout(function () {
+    toast.hide();
+  }, 1500);
+  liveToast.addEventListener("hidden.bs.toast", function () {
+    window.location.reload();
+  });
+}
+
+function showErrorToast(error) {
+  const toastElement = document.createElement("div");
+  toastElement.classList.add("customToast");
+  const toastContent = new CustomToast(error,"error");
+  toastElement.innerHTML = toastContent.renderToast();
+  document.body.appendChild(toastElement);
+  const liveToast = document.getElementById("liveToast");
+  const toast = new Toast(liveToast);
+  toast.show();
+  setTimeout(function () {
+    toast.hide();
+    removeToast(toastElement);
+  }, 2000);
+}
+
+function removeToast(toastElement) {
+  toastElement.remove();
 }
