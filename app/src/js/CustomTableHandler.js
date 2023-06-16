@@ -107,6 +107,20 @@ export class CustomTableHandler {
         }
       });
       
+      document.addEventListener("submit",async (event)=>{
+        event.preventDefault();
+        try {
+          const data = await handleSubmit(modalElement);
+          if (data && data.status === 201) {
+            closeModal(modal, modalElement);
+            showSuccessToast(data.message);
+          } else if (data && data.status === 401) {
+            showErrorToast(data.error);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      })
 
       // Ajouter un écouteur d'événements sur le bouton de fermeture du modal
       const closeButton = modalElement.querySelector(
@@ -198,7 +212,7 @@ function generateModalContent(title, formContent) {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="submit_modal" class="btn btn-primary">Submit</button>
+                <button type="submit" id="submit_modal" class="btn btn-primary">Submit</button>
             </div>
         </div>
     </form>
