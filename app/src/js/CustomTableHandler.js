@@ -75,7 +75,7 @@ export class CustomTableHandler {
   }
 
   handleBtnAdd(formGenerator) {
-    const addButton = document.getElementById("table-btnAdd");
+    const addButton = document.getElementById("table-btn-add");
     addButton.addEventListener("click", async (ev) => {
       ev.preventDefault();
 

@@ -12,7 +12,7 @@ class CustomTable
 
     private $tableName;
 
-    public function __construct(string $tableName,array $header = [],$data = [])
+    public function __construct(string $tableName, array $header = [], $data = [])
     {
         $this->header = $header;
         $this->data = $data;
@@ -53,13 +53,13 @@ class CustomTable
     {
         $output = '';
         if (preg_match('/edit/i', $btnType)) {
-            $output .= '<button type="button" id="btnEdit' . $id . '" name="edit" data-id="' . $id . '" data-api-path="' . $this->tableName . '" class="btn btn-primary">Modifier</button>';
+            $output .= '<button type="button" id="btn-edit-' . $id . '" name="edit" data-id="' . $id . '" data-api-path="' . $this->tableName . '" class="btn btn-primary">Modifier</button>';
         }
         if (preg_match('/details/i', $btnType)) {
-            $output .= '<button type="button" id=btnDetails' . $id . ' name="details" data-id=' . $id . ' data-api-path="' . $this->tableName . '" class="btn btn-info">Details</button>';
+            $output .= '<button type="button" id=btn-details-' . $id . ' name="details" data-id=' . $id . ' data-api-path="' . $this->tableName . '" class="btn btn-info">Details</button>';
         }
         if (preg_match('/delete/i', $btnType)) {
-            $output .= '<button type="button" data-api-path="' . $this->tableName . '" id=btnDelete' . $id . ' name="delete" data-id=' . $id . ' class="btn btn-danger">Supprimer</button>';
+            $output .= '<button type="button" data-api-path="' . $this->tableName . '" id=btn-delete-' . $id . ' name="delete" data-id=' . $id . ' class="btn btn-danger">Supprimer</button>';
         }
         return $output;
     }
@@ -81,7 +81,7 @@ class CustomTable
     {
         if ($this->addButtonState) {
             return '
-                <button id="table-btnAdd" class="btn btn-primary">Add</button>
+                <button id="table-btn-add" class="btn btn-primary">Ajouter</button>
             ';
         }
         return null;
@@ -171,5 +171,5 @@ class CustomTable
         HTML;
     }
 
-    
+
 }

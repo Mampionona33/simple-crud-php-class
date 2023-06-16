@@ -2,13 +2,12 @@ import { autoloadToast } from "./js/autoloadToast";
 import "./styles/style.scss";
 import * as bootstrap from "bootstrap";
 // import modalHandler from "./js/modalHandler";
-import { CustomTableHandler } from "./js/CustomTableHandler";
+import { CustomTableHandler } from "./js/CustomTableHandler_";
 
 // modalHandler();
 autoloadToast();
 console.log("Hello World!!");
 
-// run table handler
 // const generateVoterForm = (data) => {
 //   return `
 //     <div class="form-group row">
@@ -68,7 +67,7 @@ console.log("Hello World!!");
 //     `;
 // };
 
-// const voterTableHandler = new CustomTableHandler(generateVoterForm);
+const voterTableHandler = new CustomTableHandler();
 
 // const generateUserForm =(data)=>{
 //     return  `
