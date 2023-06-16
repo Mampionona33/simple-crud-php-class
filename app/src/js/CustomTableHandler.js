@@ -94,15 +94,7 @@ export class CustomTableHandler {
 
       modal.show();
 
-      // SHOW TOAST
-      const toastElement = document.createElement("div");
-      toastElement.classList.add("customToast");
-      const toastContent = new CustomToast("Utilisateur créé avec succès");
-      toastElement.innerHTML = toastContent.renderToast();
-      document.body.appendChild(toastElement);
-      const liveToast = document.getElementById("liveToast");
-
-      const toast = new Toast(liveToast);
+      
 
       const submitButton = modalElement.querySelector("#submit_modal");
 
@@ -112,19 +104,58 @@ export class CustomTableHandler {
           if (data && data.status === 201) {
             modal.hide();
             modalElement.remove();
+
+            // SHOW TOAST
+            const toastElement = document.createElement("div");
+            toastElement.classList.add("customToast");
+            const toastContent = new CustomToast(data.message);
+            toastElement.innerHTML = toastContent.renderToast();
+            document.body.appendChild(toastElement);
+            const liveToast = document.getElementById("liveToast");
+
+            const toast = new Toast(liveToast);
+
+
             toast.show();
             setTimeout(function () {
               toast.hide();
             }, 2000);
+
+            liveToast.addEventListener("hidden.bs.toast", function () {
+              window.location.reload();
+            });
+
+          }
+          if(data && data.status === 401){
+            modal.hide();
+            modalElement.remove();
+
+            // SHOW TOAST
+            const toastElement = document.createElement("div");
+            toastElement.classList.add("customToast");
+            const toastContent = new CustomToast(data.error);
+            toastElement.innerHTML = toastContent.renderToast();
+            document.body.appendChild(toastElement);
+            const liveToast = document.getElementById("liveToast");
+
+            const toast = new Toast(liveToast);
+
+
+            toast.show();
+            setTimeout(function () {
+              toast.hide();
+            }, 2000);
+
+            liveToast.addEventListener("hidden.bs.toast", function () {
+              window.location.reload();
+            });
           }
         } catch (error) {
           console.error(error);
         }
       });
 
-      liveToast.addEventListener("hidden.bs.toast", function () {
-        window.location.reload();
-      });
+      
 
       // Ajouter un écouteur d'événements sur le bouton de fermeture du modal
       const closeButton = modalElement.querySelector(
@@ -190,9 +221,6 @@ async function handleSubmit(modalElement) {
     const data = await response.json();
     data.status = response.status;
 
-    if (response.status === 201) {
-      // window.location.reload();
-    }
     return data;
   } catch (error) {
     throw error;
