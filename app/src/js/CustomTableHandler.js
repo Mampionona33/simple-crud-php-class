@@ -33,7 +33,8 @@ export class CustomTableHandler {
           // Générer le contenu du modal en utilisant les données appropriées
           const modalContent = generateModalContent(
             "Modifier l'électeur",
-            formGenerator(data)
+            formGenerator(data),
+            "edit"
           );
 
           // Créer un élément HTML pour le modal
@@ -80,7 +81,8 @@ export class CustomTableHandler {
 
       const modalContent = generateModalContent(
         "Créer un électeur",
-        formGenerator([])
+        formGenerator([]),
+        "add",
       );
 
       const modalElement = createModalElement(modalContent);
@@ -93,35 +95,37 @@ export class CustomTableHandler {
 
       const submitButton = modalElement.querySelector("#submit_modal");
 
-      submitButton.addEventListener("click", async function () {
-        try {
-          const data = await handleSubmit(modalElement);
-          if (data && data.status === 201) {
-            closeModal(modal, modalElement);
-            showSuccessToast(data.message);
-          } else if (data && data.status === 401) {
-            showErrorToast(data.error);
+      if(submitButton){
+        submitButton.addEventListener("click", async function () {
+          try {
+            const data = await handleSubmit(modalElement);
+            if (data && data.status === 201) {
+              closeModal(modal, modalElement);
+              showSuccessToast(data.message);
+            } else if (data && data.status === 401) {
+              showErrorToast(data.error);
+            }
+          } catch (error) {
+            console.error(error);
           }
-        } catch (error) {
-          console.error(error);
-        }
-      });
-      
-      document.addEventListener("submit",async (event)=>{
-        event.preventDefault();
-        try {
-          const data = await handleSubmit(modalElement);
-          if (data && data.status === 201) {
-            closeModal(modal, modalElement);
-            showSuccessToast(data.message);
-          } else if (data && data.status === 401) {
-            showErrorToast(data.error);
-          }
-        } catch (error) {
-          console.error(error);
-        }
-      })
-
+        });
+        
+        document.addEventListener("submit",async (event)=>{
+          event.preventDefault();
+          console.log(event);
+          // try {
+          //   const data = await handleSubmit(modalElement);
+          //   if (data && data.status === 201) {
+          //     closeModal(modal, modalElement);
+          //     showSuccessToast(data.message);
+          //   } else if (data && data.status === 401) {
+          //     showErrorToast(data.error);
+          //   }
+          // } catch (error) {
+          //   console.error(error);
+          // }
+        })
+      }
       // Ajouter un écouteur d'événements sur le bouton de fermeture du modal
       const closeButton = modalElement.querySelector(
         '[data-bs-dismiss="modal"]'
@@ -136,6 +140,8 @@ export class CustomTableHandler {
         modalElement.remove();
       });
     });
+
+    
   }
 
   // Méthode pour récupérer les données de l'API
@@ -194,9 +200,9 @@ async function handleSubmit(modalElement) {
   }
 }
 
-function generateModalContent(title, formContent) {
+function generateModalContent(title, formContent,action) {
   return `
-    <form class="modal-dialog modal-dialog-centered">
+    <form method="POST" class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">${title}</h5>
@@ -212,7 +218,9 @@ function generateModalContent(title, formContent) {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" id="submit_modal" class="btn btn-primary">Submit</button>
+                <button type="submit" id="submit_modal_${action}" class="btn btn-primary">${
+                  action === "edit" ? "Modifier" : "Ajouter"
+                }</button>
             </div>
         </div>
     </form>
