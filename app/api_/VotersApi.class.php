@@ -18,7 +18,7 @@ class VotersApi extends Api
                 return;
             }
 
-            // Renvoyez les données de l'utilisateur au format JSON
+            // Renvoyez les données de l'électeur au format JSON
             $this->sendResponse(200, $voter);
         }
     }
@@ -32,7 +32,7 @@ class VotersApi extends Api
             }
             if (!$this->voterExist($data)) {
                 if (!$this->validateAge($data)) {
-                    $this->sendResponse(401, ['error' => 'The user is not eligible']);
+                    $this->sendResponse(401, ['error' => 'The voter is not eligible']);
                     exit;
                 }
 

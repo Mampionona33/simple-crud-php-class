@@ -2,12 +2,21 @@ import { Modal, Toast } from "bootstrap";
 import { CustomToast } from "./CustomToast";
 
 export class CustomTableHandler {
-  constructor(formTemplate, modalAddTitle) {
+  constructor(
+    formTemplate,
+    modalAddTitle,
+    modalEditTitle,
+    apiEndpoint,
+    idVariableName
+  ) {
     // initialise variables
     this.formTemplate = formTemplate;
     this.modalAddTitle = modalAddTitle;
     this.modalElement = document.createElement("div");
     this.modalElement.classList.add("modal");
+    this.modalEditTitle = modalEditTitle;
+    this.apiEndpoint = apiEndpoint;
+    this.idVariableName = idVariableName;
 
     // Ecouter le bouton add
     this.buttonAdd = document.getElementById("table-btn-add");
@@ -18,6 +27,8 @@ export class CustomTableHandler {
     this.buttonEdit.forEach((button) => {
       button.addEventListener("click", (ev) => {
         ev.preventDefault();
+        // recuperer l'id de la ligne pour la recuperer dans handleClickEdit
+        this.rowId = ev.target.dataset.id;
         this.handleClickEdit.bind(this)();
       });
     });
@@ -33,12 +44,16 @@ export class CustomTableHandler {
     this.showModal(this.modalAddTitle);
   }
 
-  handleClickEdit() {
-    console.log("Button edit clicked");
+  async handleClickEdit() {
+    // Créer un modal au click sur un boutton edit
+    try {
+      const rowData = await this.getRowDataFromApi();
+      this.showModal(this.modalEditTitle, rowData[0]);
+    } catch (error) {}
   }
 
-  showModal(title) {
-    const modalForm = this.generateModal(title);
+  showModal(title, data) {
+    const modalForm = this.generateModal(title, data);
     this.modalElement.innerHTML = modalForm;
     document.body.appendChild(this.modalElement);
     this.modal = new Modal(this.modalElement, {
@@ -54,6 +69,14 @@ export class CustomTableHandler {
   }
 
   generateModal(title = "Title", data = []) {
+    const buttonSubmitText =
+      Object.keys(data).length === 0 ? "Ajouter" : "Modifier";
+
+    this.buttonSubmitId =
+      Object.keys(data).length === 0
+        ? "submit_modal_create"
+        : "submit_modal_update";
+
     return `
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -64,14 +87,14 @@ export class CustomTableHandler {
           <form id="form_modal">
             <div class="modal-body">
               <div class="d-flex justify-content-center align-items-center">
-                <div class="col-9">${this.formTemplate([])}</div>
+                <div class="col-9">${this.formTemplate(data)}</div>
               </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="submit" id="submit_modal" class="btn btn-primary">${
-                data.length > 0 ? "Modifier" : "Ajouter"
-              }</button>
+              <button type="submit" id="${
+                this.buttonSubmitId
+              }" class="btn btn-primary">${buttonSubmitText}</button>
             </div>
           </form>
         </div>
@@ -91,23 +114,38 @@ export class CustomTableHandler {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
-    this.postDataToApi(data).then((resp) => {
-      if (resp.status === 201) {
-        this.createToaster(resp.data.message);
-      }
-      if (resp.status === 401) {
-        this.createToaster(resp.data.error, "error");
-      }
-    });
+    const submitButton = form.querySelector(`#${this.buttonSubmitId}`);
+    const isEditModal = submitButton.id === "submit_modal_update";
+
+    if (isEditModal) {
+      // Utiliser la méthode "PUT" pour l'édition
+      this.putDataToApi(data).then((resp) => {
+        if (resp.status === 200) {
+          this.createToaster(resp.data.message);
+        }
+        if (resp.status === 401) {
+          this.createToaster(resp.data.error, "error");
+        }
+      });
+    } else {
+      // Utiliser la méthode "POST" pour l'ajout
+      this.postDataToApi(data).then((resp) => {
+        if (resp.status === 201) {
+          this.createToaster(resp.data.message);
+        }
+        if (resp.status === 401) {
+          this.createToaster(resp.data.error, "error");
+        }
+      });
+    }
   }
 
-  async postDataToApi(postData) {
-    const apiUrl = "voter";
+  async putDataToApi(putData) {
     try {
-      const response = await fetch(`/api/${apiUrl}`, {
-        method: "POST",
+      const response = await fetch(`/api/${this.apiEndpoint}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(postData),
+        body: JSON.stringify(putData),
       });
       const data = await response.json();
       return {
@@ -137,7 +175,7 @@ export class CustomTableHandler {
       this.modal.hide();
       if (this.modal.hide) {
         setTimeout(() => {
-          window.location.reload();
+          // window.location.reload();
         }, 2500);
       }
     }
@@ -145,5 +183,38 @@ export class CustomTableHandler {
     this.liveToast.addEventListener("hidden.bs.toast", () => {
       this.toastElement.remove();
     });
+  }
+
+  async postDataToApi(postData) {
+    try {
+      const response = await fetch(`/api/${this.apiEndpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(postData),
+      });
+      const data = await response.json();
+      return {
+        status: response.status,
+        data: data,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getRowDataFromApi() {
+    try {
+      const response = await fetch(
+        `/api/${this.apiEndpoint}?${this.idVariableName}=${this.rowId}`
+      );
+      if (!response.ok) {
+        throw new Error("Unable to fetch data from API.");
+      }
+      const data = response.json(); // Utilise response.json() pour obtenir les données JSON
+      return data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 }
