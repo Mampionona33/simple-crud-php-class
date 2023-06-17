@@ -21,7 +21,6 @@ class AuthController
         // Vérifier si l'utilisateur est authentifié
         if (!isset($_SESSION["user"])) {
             // Rediriger vers la page de connexion
-
             if ($pathname !== '/login' && $pathname !== '/' && !preg_match('/api/i', $pathname)) {
                 if (!headers_sent()) {
                     header("Location: /login");
@@ -34,8 +33,10 @@ class AuthController
 
             if ($role === "operator") {
                 if ($pathname === '/') {
-                    header("Location: /operator/dashboard?id=$id");
-                    exit();
+                    if (isset($_GET["id"]) && intval($_GET["id"]) == $id) {
+                        header("Location: /operator/dashboard?id=$id");
+                        exit();
+                    }
                 }
             } elseif ($role === "admin") {
                 if ($pathname === '/') {
@@ -67,7 +68,7 @@ class AuthController
                         $this->templateRenderer->setError("Error", "User is not an admin");
                     }
                 } else {
-                    $this->templateRenderer->setError("Error", "Identifiant ou mots de passe incorrecte");
+                    $this->templateRenderer->setError("Error", "Identifiant ou mot de passe incorrect");
                     header("Refresh: 3 /login");
                 }
             }

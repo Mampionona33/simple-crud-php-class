@@ -3,7 +3,7 @@ class VisitorController extends AbstractUserController
 {
 
     private $votersModel;
-    private $templateRenderer;
+    protected $templateRenderer;
     protected $tableVoters;
 
     public function __construct(TemplateRenderer $templateRenderer)
@@ -11,7 +11,6 @@ class VisitorController extends AbstractUserController
         $this->votersModel = new VotersModel();
         $this->templateRenderer = $templateRenderer;
         $this->tableVoters = new TableVoters;
-
     }
     public function getVoter($voterId): string
     {
