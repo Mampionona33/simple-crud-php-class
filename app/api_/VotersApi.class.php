@@ -31,7 +31,13 @@ class VotersApi extends Api
                 exit;
             }
             if (!$this->voterExist($data)) {
+                if (!$this->validateAge($data)) {
+                    $this->sendResponse(401, ['error' => 'The user is not eligible']);
+                    exit;
+                }
+
                 $createdVoter = $this->votersModel->createVoter($data);
+
                 if ($createdVoter) {
                     $this->sendResponse(201, ["message" => "Voter created successfully!!"]);
                     exit;
@@ -61,6 +67,15 @@ class VotersApi extends Api
     private function requiredValue($data): bool
     {
         if (!$data["name"] || !$data["last_name"] || !$data["birthday"] || !$data["adresse"]) {
+            return true;
+        }
+        return false;
+    }
+
+    private function validateAge($data): bool
+    {
+        $age = date_diff(new DateTime(), new DateTime($data["birthday"]));
+        if ($age->y >= 18) {
             return true;
         }
         return false;
