@@ -50,7 +50,7 @@ class VotersApi extends Api
 
     private function voterExist($data): bool
     {
-        $condition = "name='" . $data["name"] . "' AND last_name='" . $data["last_name"] . "'AND birthday='" . $data["birthday"] . "'";
+        $condition = "name='" . $data["name"] . "' AND last_name='" . $data["last_name"] . "'AND birthday='" . $data["birthday"] . "' AND civility='" . $data["civility"] . "'";
         $voters = $this->votersModel->getVoters([], $condition);
         if (count($voters) > 0) {
             return true;
@@ -65,5 +65,4 @@ class VotersApi extends Api
         }
         return false;
     }
-
 }
