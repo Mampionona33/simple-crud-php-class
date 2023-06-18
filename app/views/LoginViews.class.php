@@ -42,6 +42,7 @@ class LoginViews
 
     public function render()
     {
-        return $this->templateRenderer->render("Login", $this->loginForm());
+        $this->templateRenderer->setBodyContent($this->loginForm());
+        return $this->templateRenderer->render("Login");
     }
 }

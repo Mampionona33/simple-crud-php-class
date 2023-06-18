@@ -7,12 +7,13 @@ class TemplateRenderer
     private $errorTitle;
     private $navbarContent;
     private $modalContent;
+    public $bodyContent;
     private $title;
 
-    public function render($title = "Document", $content = null, $sidebarContent = null): string
+    public function render($title = "Document", $bodyContent = null, $sidebarContent = null): string
     {
         ob_start();
-        ?>
+?>
         <!DOCTYPE html>
         <html lang="fr">
 
@@ -21,10 +22,7 @@ class TemplateRenderer
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link rel="stylesheet" href="../dist/style.css">
-            <title>
-                <?php echo $title; ?>
-            </title>
-
+            <title><?php echo $title; ?></title>
         </head>
 
         <body>
@@ -34,14 +32,26 @@ class TemplateRenderer
             <?php echo $this->errorMessage ? $this->renderErrorMessage() : null; ?>
             <div class="container">
                 <?php echo $sidebarContent; ?>
-                <?php echo $content; ?>
+                <?php echo $this->bodyContent ? $this->renderBodyContent() : null; ?>
             </div>
             <script type="module" src="../dist/app-bundle.js"></script>
         </body>
 
         </html>
-        <?php
+<?php
         return ob_get_clean();
+    }
+
+    public function renderBodyContent(): string
+    {
+        if ($this->bodyContent) {
+            return '
+            <div class="d-flex align-items-center justify-content-center min-vh-100">
+                ' . $this->bodyContent . '
+            </div>
+            ';
+        }
+        return '';
     }
 
     public function setMessage($msgTitle, $message): void
@@ -50,10 +60,16 @@ class TemplateRenderer
         $this->message = $message;
     }
 
+    public function setBodyContent($bodyContent)
+    {
+        $this->bodyContent = $bodyContent;
+    }
+
     public function setNavbarContent($navbarContent): void
     {
         $this->navbarContent = $navbarContent;
     }
+
     public function setModalContent($modalContent): void
     {
         $this->modalContent = $modalContent;
@@ -69,18 +85,16 @@ class TemplateRenderer
     {
         if ($this->message) {
             return '
-            <div class="toast-container position-fixed bottom-0 end-0 p-3 ">
+            <div class="toast-container position-fixed bottom-0 end-0 p-3">
                 <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header">
-                    <strong class="me-auto">' . $this->msgTitle . '</strong>
-                    <small>Now</small>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        <strong class="me-auto">' . $this->msgTitle . '</strong>
+                        <small>Now</small>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
-                    <div class="toast-body text-bg-primary">'
-                . $this->message .
-                '</div>
+                    <div class="toast-body text-bg-primary">' . $this->message . '</div>
                 </div>
-                </div>
+            </div>
             ';
         }
         return null;
@@ -106,20 +120,18 @@ class TemplateRenderer
     {
         if ($this->errorMessage) {
             return '
-        <div class="toast-container position-fixed bottom-0 end-0 p-3 ">
-            <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header text-bg-danger">
-                    <strong class="me-auto">' . $this->errorTitle . '</strong>
-                    <small>Now</small>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header text-bg-danger">
+                        <strong class="me-auto">' . $this->errorTitle . '</strong>
+                        <small>Now</small>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">' . $this->errorMessage . '</div>
                 </div>
-                <div class="toast-body ">'
-                . $this->errorMessage .
-                '</div>
             </div>
-        </div>';
+            ';
         }
         return null;
     }
-
 }

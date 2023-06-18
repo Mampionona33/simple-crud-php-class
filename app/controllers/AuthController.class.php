@@ -1,7 +1,7 @@
 <?php
 class AuthController
 {
-    private $templateRenderer;
+    protected $templateRenderer;
     public function __construct()
     {
     }
