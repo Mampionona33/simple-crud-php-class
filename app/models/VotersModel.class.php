@@ -72,4 +72,12 @@ class VotersModel
     {
         return $this->dataManipulator->updateData($this->tableName, $data, $id_key, $id_value);
     }
+
+    public function deleteVoter($id_key, $id_value)
+    {
+        if ($this->dataManipulator->deleteData($this->tableName, $id_key, $id_value)) {
+            return true;
+        }
+        return false;
+    }
 }

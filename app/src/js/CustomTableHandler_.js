@@ -30,9 +30,14 @@ export class CustomTableHandler {
     // Ecouter le boutton delete
     this.buttonDelete = document.querySelectorAll('button[name="delete"]');
     this.buttonDelete.forEach((buttonDelete) => {
-      buttonDelete.addEventListener("click", (ev) => {
-        console.log(ev.target);
-      });
+      if (buttonDelete) {
+        buttonDelete.addEventListener("click", (ev) => {
+          ev.preventDefault();
+          // console.log(ev.target.dataset);
+          this.rowId = ev.target.dataset.id;
+          this.handleClickDelete();
+        });
+      }
     });
 
     // Remove modal if hidden
@@ -42,20 +47,28 @@ export class CustomTableHandler {
     );
   }
 
+  handleClickDelete(id) {
+    const modalForm = this.generateAlerteConfrimDelete.bind(this)(id);
+    this.showModal(modalForm);
+  }
+
   handleClickAdd() {
-    this.showModal(this.modalAddTitle);
+    const modalForm = this.generateModal(this.modalAddTitle);
+    this.showModal(modalForm);
   }
 
   async handleClickEdit() {
     // Créer un modal au click sur un boutton edit
     try {
       const rowData = await this.getRowDataFromApi();
-      this.showModal(this.modalEditTitle, rowData[0]);
+      const modalForm = this.generateModal(this.modalEditTitle, rowData[0]);
+      // this.showModal(this.modalEditTitle, rowData[0]);
+      this.showModal(modalForm);
     } catch (error) {}
   }
 
-  showModal(title, data) {
-    const modalForm = this.generateModal(title, data);
+  showModal(modalForm) {
+    // const modalForm = this.generateModal(title, data);
     this.modalElement.innerHTML = modalForm;
     document.body.appendChild(this.modalElement);
     this.modal = new Modal(this.modalElement, {
@@ -66,42 +79,7 @@ export class CustomTableHandler {
     // Ecouter l'événement de soumission du formulaire
     const form = this.modalElement.querySelector("#form_modal");
     form.addEventListener("submit", this.handleFormSubmit.bind(this));
-
     this.modal.show();
-  }
-
-  generateModal(title = "Title", data = []) {
-    const buttonSubmitText =
-      Object.keys(data).length === 0 ? "Ajouter" : "Modifier";
-
-    this.buttonSubmitId =
-      Object.keys(data).length === 0
-        ? "submit_modal_create"
-        : "submit_modal_update";
-
-    return `
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">${title}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <form id="form_modal">
-            <div class="modal-body">
-              <div class="d-flex justify-content-center align-items-center">
-                <div class="col-9">${this.formTemplate(data)}</div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="submit" id="${
-                this.buttonSubmitId
-              }" class="btn btn-primary">${buttonSubmitText}</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    `;
   }
 
   removeModal() {
@@ -130,6 +108,16 @@ export class CustomTableHandler {
           this.createToaster(resp.data.error, "error");
         }
       });
+    } else if (submitButton.id === "submit_modal_delete") {
+      // Utiliser la méthode "DELETE" pour la suppression
+      this.deleteDataFromApi().then((resp) => {
+        if (resp.status === 200) {
+          this.createToaster(resp.data.message);
+        }
+        if (resp.status === 401) {
+          this.createToaster(resp.data.error, "error");
+        }
+      });
     } else {
       // Utiliser la méthode "POST" pour l'ajout
       this.postDataToApi(data).then((resp) => {
@@ -148,6 +136,24 @@ export class CustomTableHandler {
       const requestData = { ...putData, id_voter: this.rowId };
       const response = await fetch(`/api/${this.apiEndpoint}`, {
         method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestData),
+      });
+      const data = await response.json();
+      return {
+        status: response.status,
+        data: data,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteDataFromApi() {
+    try {
+      const requestData = { id_voter: this.rowId };
+      const response = await fetch(`/api/${this.apiEndpoint}`, {
+        method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestData),
       });
@@ -222,9 +228,61 @@ export class CustomTableHandler {
     }
   }
 
-  alertConfirmDelete() {
+  generateModal(title = "Title", data = []) {
+    const buttonSubmitText =
+      Object.keys(data).length === 0 ? "Ajouter" : "Modifier";
+
+    this.buttonSubmitId =
+      Object.keys(data).length === 0
+        ? "submit_modal_create"
+        : "submit_modal_update";
+
     return `
-    
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">${title}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form id="form_modal">
+            <div class="modal-body">
+              <div class="d-flex justify-content-center align-items-center">
+                <div class="col-9">${this.formTemplate(data)}</div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" id="${
+                this.buttonSubmitId
+              }" class="btn btn-primary">${buttonSubmitText}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    `;
+  }
+
+  generateAlerteConfrimDelete() {
+    this.buttonSubmitId = "submit_modal_delete";
+    return `
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <form id="form_modal">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirmation de suppression</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="${this.idVariableName}" value="${this.rowId}"/>
+            <p>Êtes-vous sûr de vouloir supprimer cet élément ?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            <button type="submit" id="${this.buttonSubmitId}" class="btn btn-danger">Supprimer</button>
+          </div>
+          </form>
+        </div>
+      </div>
     `;
   }
 }

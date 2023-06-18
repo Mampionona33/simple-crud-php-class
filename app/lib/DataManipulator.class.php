@@ -93,4 +93,20 @@ class DataManipulator
             return false;
         }
     }
+
+    public function deleteData($tableName, $id_key, $id_value)
+    {
+        $sql = "DELETE FROM $tableName WHERE $id_key = :id";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(":id", $id_value);
+
+        try {
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            echo "Erreur lors de la suppression des données : " . $e->getMessage();
+            return false;
+        }
+    }
 }

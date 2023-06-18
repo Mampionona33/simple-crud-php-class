@@ -82,7 +82,18 @@ class VotersApi extends Api
         $this->sendResponse(400, ['error' => 'Invalid request']);
     }
 
-
+    public function deleteVoter($data)
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+            if ($this->votersModel->deleteVoter("id_voter", $data["id_voter"])) {
+                $this->sendResponse(200, ["message" => "Voter delete successfully!!"]);
+                exit;
+            } else {
+                $this->sendResponse(500, ['error' => 'Error updating voter']);
+                exit;
+            }
+        }
+    }
     // Validations
     private function voterExist($data): bool
     {

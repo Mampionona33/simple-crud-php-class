@@ -61,6 +61,9 @@ switch ($uri) {
             } elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
                 $requestData = json_decode(file_get_contents('php://input'), true);
                 $voterApi->updateVoter($requestData);
+            } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+                $requestData = json_decode(file_get_contents('php://input'), true);
+                $voterApi->deleteVoter($requestData);
             } else {
                 http_response_code(400);
                 header('Content-Type: application/json');
