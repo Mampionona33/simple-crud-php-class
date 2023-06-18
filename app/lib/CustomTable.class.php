@@ -59,7 +59,7 @@ class CustomTable
             $output .= '<button type="button" id=btn-details-' . $id . ' name="details" data-id=' . $id . ' data-api-path="' . $this->tableName . '" class="btn btn-info">Details</button>';
         }
         if (preg_match('/delete/i', $btnType)) {
-            $output .= '<button type="button" data-api-path="' . $this->tableName . '" id=btn-delete-' . $id . ' name="delete" data-id=' . $id . ' class="btn btn-danger">Supprimer</button>';
+            $output .= '<button type="button" data-api-path="' . $this->tableName . '" id=btn-delete-' . $id . ' name="delete" data-id=' . $id . ' class="btn btn-danger" >Supprimer</button>';
         }
         return $output;
     }

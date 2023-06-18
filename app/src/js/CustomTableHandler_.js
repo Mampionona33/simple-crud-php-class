@@ -2,19 +2,13 @@ import { Modal, Toast } from "bootstrap";
 import { CustomToast } from "./CustomToast";
 
 export class CustomTableHandler {
-  constructor(
-    formTemplate,
-    modalAddTitle,
-    modalEditTitle,
-    apiEndpoint,
-    idVariableName
-  ) {
+  constructor(formTemplate, concernedRessource, apiEndpoint, idVariableName) {
     // initialise variables
     this.formTemplate = formTemplate;
-    this.modalAddTitle = modalAddTitle;
+    this.modalAddTitle = `Créer ${concernedRessource}`;
     this.modalElement = document.createElement("div");
     this.modalElement.classList.add("modal");
-    this.modalEditTitle = modalEditTitle;
+    this.modalEditTitle = `Modifier ${concernedRessource}`;
     this.apiEndpoint = apiEndpoint;
     this.idVariableName = idVariableName;
 
@@ -30,6 +24,14 @@ export class CustomTableHandler {
         // recuperer l'id de la ligne pour la recuperer dans handleClickEdit
         this.rowId = ev.target.dataset.id;
         this.handleClickEdit.bind(this)();
+      });
+    });
+
+    // Ecouter le boutton delete
+    this.buttonDelete = document.querySelectorAll('button[name="delete"]');
+    this.buttonDelete.forEach((buttonDelete) => {
+      buttonDelete.addEventListener("click", (ev) => {
+        console.log(ev.target);
       });
     });
 
@@ -218,5 +220,11 @@ export class CustomTableHandler {
       console.error(error);
       throw error;
     }
+  }
+
+  alertConfirmDelete() {
+    return `
+    
+    `;
   }
 }

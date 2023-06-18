@@ -69,9 +69,9 @@ const generateVoterForm = (data) => {
 
 const voterTableHandler = new CustomTableHandler(
   generateVoterForm,
-  "Créer un électeur",
-  "Modifier un électeur",
-  "voter","id_voter"
+  "un électeur",
+  "voter",
+  "id_voter"
 );
 
 // const generateUserForm =(data)=>{
