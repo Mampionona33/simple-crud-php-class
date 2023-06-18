@@ -2,10 +2,12 @@
 class VotersApi extends Api
 {
     private $votersModel;
+    private $id_key;
 
     public function __construct()
     {
         $this->votersModel = new VotersModel();
+        $this->id_key = "id_voter";
     }
 
     public function getVoter($id_voter)
@@ -53,7 +55,35 @@ class VotersApi extends Api
 
         $this->sendResponse(400, ['error' => 'Invalid request']);
     }
+    public function updateVoter($data)
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+            if ($this->requiredValue($data)) {
+                $this->sendResponse(401, ['error' => 'Missing required value!!']);
+                exit;
+            }
 
+            if (!$this->validateAge($data)) {
+                $this->sendResponse(401, ['error' => 'The voter is not eligible']);
+                exit;
+            }
+
+            $updatedVoter = $this->votersModel->updateVoter($data, $this->id_key, $data["id_voter"]);
+
+            if ($updatedVoter) {
+                $this->sendResponse(200, ["message" => "Voter updated successfully!!"]);
+                exit;
+            } else {
+                $this->sendResponse(500, ['error' => 'Error updating voter']);
+                exit;
+            }
+        }
+
+        $this->sendResponse(400, ['error' => 'Invalid request']);
+    }
+
+
+    // Validations
     private function voterExist($data): bool
     {
         $condition = "name='" . $data["name"] . "' AND last_name='" . $data["last_name"] . "'AND birthday='" . $data["birthday"] . "' AND civility='" . $data["civility"] . "'";

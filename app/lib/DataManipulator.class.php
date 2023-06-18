@@ -61,4 +61,36 @@ class DataManipulator
             exit();
         }
     }
+
+    public function updateData(string $tableName, array $data, $id_key, $id_value)
+    {
+        $placeholders = '';
+        $updateValues = '';
+
+        foreach ($data as $key => $value) {
+            $placeholders .= "$key = :$key, ";
+            $updateValues .= "`$key` = :$key, ";
+        }
+
+        $placeholders = rtrim($placeholders, ', ');
+        $updateValues = rtrim($updateValues, ', ');
+
+        $sql = "UPDATE $tableName SET $placeholders WHERE $id_key = :id";
+
+        $stmt = $this->db->prepare($sql);
+
+        foreach ($data as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
+
+        $stmt->bindValue(":id", $id_value);
+
+        try {
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            echo "Erreur lors de la mise à jour des données : " . $e->getMessage();
+            return false;
+        }
+    }
 }

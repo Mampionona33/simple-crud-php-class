@@ -120,6 +120,7 @@ export class CustomTableHandler {
     if (isEditModal) {
       // Utiliser la méthode "PUT" pour l'édition
       this.putDataToApi(data).then((resp) => {
+        // console.log(resp);
         if (resp.status === 200) {
           this.createToaster(resp.data.message);
         }
@@ -142,10 +143,11 @@ export class CustomTableHandler {
 
   async putDataToApi(putData) {
     try {
+      const requestData = { ...putData, id_voter: this.rowId };
       const response = await fetch(`/api/${this.apiEndpoint}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(putData),
+        body: JSON.stringify(requestData),
       });
       const data = await response.json();
       return {
@@ -175,8 +177,8 @@ export class CustomTableHandler {
       this.modal.hide();
       if (this.modal.hide) {
         setTimeout(() => {
-          // window.location.reload();
-        }, 2500);
+          window.location.reload();
+        }, 2000);
       }
     }
 

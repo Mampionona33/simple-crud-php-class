@@ -67,4 +67,9 @@ class VotersModel
     {
         return $this->dataManipulator->createData($this->tableName, $data);
     }
+
+    public function updateVoter(array $data, $id_key, $id_value)
+    {
+        return $this->dataManipulator->updateData($this->tableName, $data, $id_key, $id_value);
+    }
 }
