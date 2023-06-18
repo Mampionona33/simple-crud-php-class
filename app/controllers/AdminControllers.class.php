@@ -25,7 +25,10 @@ class AdminControllers extends VisitorController
         if ($this->role === 'admin') {
             if (strpos($this->pathname, '/admin/dashboard') !== false) {
                 if (isset($_GET["id"]) && $_GET["id"] == $this->id) {
-                    $this->templateRenderer->setNavbarContent($this->getNavbar());
+                    $this->navBar = $this->getNavbar();
+                    $this->navBar->setMenuVisible(true);
+                    $this->templateRenderer->setNavbarContent($this->navBar->render());
+                    $this->templateRenderer->setSidebarContent("test");
                     $this->templateRenderer->setBodyContent("test");
                     return $this->templateRenderer->render("Dashboard");
                 } else {

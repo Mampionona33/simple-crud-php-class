@@ -7,7 +7,8 @@ class TemplateRenderer
     private $errorTitle;
     private $navbarContent;
     private $modalContent;
-    public $bodyContent;
+    private $bodyContent;
+    private $sideBarContent;
     private $title;
 
     public function render($title = "Document", $bodyContent = null, $sidebarContent = null): string
@@ -31,7 +32,7 @@ class TemplateRenderer
             <?php echo $this->renderModal(); ?>
             <?php echo $this->errorMessage ? $this->renderErrorMessage() : null; ?>
             <div class="container">
-                <?php echo $sidebarContent; ?>
+                <?php echo $this->sideBarContent ? $this->renderSideBar() : null; ?>
                 <?php echo $this->bodyContent ? $this->renderBodyContent() : null; ?>
             </div>
             <script type="module" src="../dist/app-bundle.js"></script>
@@ -52,6 +53,31 @@ class TemplateRenderer
             ';
         }
         return '';
+    }
+
+    public function setSidebarContent($sideBarContent): void
+    {
+        $this->sideBarContent = $sideBarContent;
+    }
+
+    public function renderSideBar(): mixed
+    {
+        if ($this->sideBarContent) {
+            return '
+            <div class="offcanvas offcanvas-start" data-bs-backdrop="static" tabindex="-1" id="staticBackdrop" aria-labelledby="staticBackdropLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="staticBackdropLabel">Offcanvas</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <div>'
+                . $this->sideBarContent .
+                '</div>
+                </div>
+            </div>
+            ';
+        }
+        return null;
     }
 
     public function setMessage($msgTitle, $message): void

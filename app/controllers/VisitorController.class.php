@@ -29,8 +29,8 @@ class VisitorController extends AbstractUserController
         return $this->templateRenderer->render("List électeurs");
     }
 
-    protected function getNavbar(): string
+    protected function getNavbar(): Navbar
     {
-        return $this->navbar->render();
+        return $this->navbar;
     }
 }
