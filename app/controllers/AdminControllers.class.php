@@ -48,8 +48,13 @@ class AdminControllers extends VisitorController
         <div class="global-data-card">
             <div class="card border-0">
                 <div class="card-body">
-                    <h5 class="card-title">Voter</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Total : 1000</h6>
+                    <div class="d-flex gap-5 align-items-center">
+                        <h5 class="card-title">Voter</h5>
+                        <span class="material-icons-outlined bg-secondary rounded-circle p-2">
+                            people_alt
+                        </span>
+                    </div>
+                    <h6 class="card-subtitle mb-2 text-muted">Total: 1000</h6>
                 </div>
             </div>
         </div>
