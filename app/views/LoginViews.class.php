@@ -18,7 +18,7 @@ class LoginViews
         return <<<HTML
         <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
             <div class="">
-                <form method="POST" class="d-flex flex-column gap-2 rounded shadow p-4">
+                <form method="POST" class="d-flex flex-column gap-2 bg-white rounded shadow p-4">
                     <div class="form-group row">
                         <label for="email" class="col-sm-3 col-form-label">Identifiant</label>
                         <div class="col-sm-9">

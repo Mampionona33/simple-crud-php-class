@@ -28,8 +28,9 @@ class AdminControllers extends VisitorController
                     $this->navBar = $this->getNavbar();
                     $this->navBar->setMenuVisible(true);
                     $this->templateRenderer->setNavbarContent($this->navBar->render());
+                    $cardVoter = $this->customCard();
                     $this->templateRenderer->setSidebarContent("test");
-                    $this->templateRenderer->setBodyContent("test");
+                    $this->templateRenderer->setBodyContent($cardVoter);
                     return $this->templateRenderer->render("Dashboard");
                 } else {
                     // L'ID dans l'URL est invalide
@@ -41,8 +42,17 @@ class AdminControllers extends VisitorController
         return "Error: Unable to get voters";
     }
 
-    private function renderDashboard(): string
+    private function customCard(): string
     {
-        return "test";
+        return '
+        <div class="global-data-card">
+            <div class="card border-0">
+                <div class="card-body">
+                    <h5 class="card-title">Voter</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Total : 1000</h6>
+                </div>
+            </div>
+        </div>
+        ';
     }
 }

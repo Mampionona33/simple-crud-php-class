@@ -14,7 +14,7 @@ class TemplateRenderer
     public function render($title = "Document", $bodyContent = null, $sidebarContent = null): string
     {
         ob_start();
-?>
+        ?>
         <!DOCTYPE html>
         <html lang="fr">
 
@@ -23,10 +23,13 @@ class TemplateRenderer
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link rel="stylesheet" href="../dist/style.css">
-            <title><?php echo $title; ?></title>
+
+            <title>
+                <?php echo $title; ?>
+            </title>
         </head>
 
-        <body>
+        <body class="custom-bc">
             <?php echo $this->renderNavbar() ?>
             <?php echo $this->renderMessage(); ?>
             <?php echo $this->renderModal(); ?>
@@ -39,7 +42,7 @@ class TemplateRenderer
         </body>
 
         </html>
-<?php
+        <?php
         return ob_get_clean();
     }
 
