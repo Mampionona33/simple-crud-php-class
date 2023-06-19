@@ -31,8 +31,11 @@ class LoginViews
                             <input type="password" class="form-control form-control-sm" name="password" id="password"  required>
                         </div>
                     </div>
-                    <div class="d-flex justify-content-center gap-3">
-                        <input type="submit" value="Login" class="btn btn-primary">
+                    <div class="d-flex justify-content-start align-items-center gap-3 btn btn-primary">
+                        <span class="material-icons-outlined">
+                            vpn_key
+                        </span>
+                        <input type="submit" value="Login" class="btn text-white">
                     </div>
                 </form>
             </div>

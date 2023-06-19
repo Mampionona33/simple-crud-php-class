@@ -53,13 +53,26 @@ class CustomTable
     {
         $output = '';
         if (preg_match('/edit/i', $btnType)) {
-            $output .= '<button type="button" id="btn-edit-' . $id . '" name="edit" data-id="' . $id . '" data-api-path="' . $this->tableName . '" class="btn btn-primary">Modifier</button>';
+            $output .= '<button type="button" id="btn-edit-' . $id . '" name="edit" data-toggle="tooltip" data-placement="top" title="Modifier"  data-api-path="' . $this->tableName . '" class="btn btn-primary d-flex align-items-center gap-1" data-toggle="Modifier">
+            <span data-id="' . $id . '" class="material-icons-outlined">
+                edit
+            </span>Modifier</button>';
         }
         if (preg_match('/details/i', $btnType)) {
-            $output .= '<button type="button" id=btn-details-' . $id . ' name="details" data-id=' . $id . ' data-api-path="' . $this->tableName . '" class="btn btn-info">Details</button>';
+            $output .= '<button type="button" id=btn-details-' . $id . ' name="details"  data-api-path="' . $this->tableName . '" class="btn btn-info d-flex align-items-center gap-1" data-toggle="tooltip" data-placement="top" title="Details" >
+                            <span data-id=' . $id . ' class="material-icons-outlined">
+                                info
+                            </span>
+                            Info
+                        </button>';
         }
         if (preg_match('/delete/i', $btnType)) {
-            $output .= '<button type="button" data-api-path="' . $this->tableName . '" id=btn-delete-' . $id . ' name="delete" data-id=' . $id . ' class="btn btn-danger" >Supprimer</button>';
+            $output .= '<button type="button" data-api-path="' . $this->tableName . '" id=btn-delete-' . $id . ' name="delete"  class="btn btn-danger d-flex align-items-center gap-1" data-toggle="tooltip" data-placement="top" title="Supprimer"  >
+                <span data-id=' . $id . ' class="material-icons-outlined">
+                    delete
+                </span>
+                Supprimer
+            </button>';
         }
         return $output;
     }
@@ -81,7 +94,12 @@ class CustomTable
     {
         if ($this->addButtonState) {
             return '
-                <button id="table-btn-add" class="btn btn-primary">Ajouter</button>
+                <button id="table-btn-add" class="btn btn-primary d-flex align-items-center gap-1">
+                    <span class="material-icons-outlined">
+                        add_circle_outline
+                    </span>
+                    Ajouter
+                </button>
             ';
         }
         return null;

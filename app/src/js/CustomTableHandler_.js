@@ -19,10 +19,11 @@ export class CustomTableHandler {
     // Ecouter si le bouton edit est cliqué
     this.buttonEdit = document.querySelectorAll('button[name="edit"]');
     this.buttonEdit.forEach((button) => {
-      button.addEventListener("click", (ev) => {
+      button.addEventListener("click",(ev) => {
         ev.preventDefault();
         // recuperer l'id de la ligne pour la recuperer dans handleClickEdit
         this.rowId = ev.target.dataset.id;
+        console.log(ev.target);
         this.handleClickEdit.bind(this)();
       });
     });
@@ -33,7 +34,6 @@ export class CustomTableHandler {
       if (buttonDelete) {
         buttonDelete.addEventListener("click", (ev) => {
           ev.preventDefault();
-          // console.log(ev.target.dataset);
           this.rowId = ev.target.dataset.id;
           this.handleClickDelete();
         });
@@ -100,7 +100,6 @@ export class CustomTableHandler {
     if (isEditModal) {
       // Utiliser la méthode "PUT" pour l'édition
       this.putDataToApi(data).then((resp) => {
-        // console.log(resp);
         if (resp.status === 200) {
           this.createToaster(resp.data.message);
         }
