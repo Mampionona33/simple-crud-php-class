@@ -40,4 +40,9 @@ class AdminControllers extends VisitorController
         }
         return "Error: Unable to get voters";
     }
+
+    private function renderDashboard(): string
+    {
+        return "test";
+    }
 }
