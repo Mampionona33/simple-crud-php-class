@@ -6,6 +6,7 @@ class AdminControllers extends VisitorController
     private $id;
     protected $navBar;
     protected $votersModel;
+    protected $usersModel;
 
     public function __construct(TemplateRenderer $templateRenderer)
     {
@@ -21,6 +22,8 @@ class AdminControllers extends VisitorController
         if (isset($_SESSION["user"]["id_user"])) {
             $this->id = $_SESSION["user"]["id_user"];
         }
+
+        $this->usersModel = new UsersModel();
     }
 
     public function dashboard(): string
@@ -39,13 +42,19 @@ class AdminControllers extends VisitorController
                     $cardVoter->setTextColor("#fff");
                     $cardVoter->setIcon("how_to_vote");
 
-                    $cardOperator = new CustomCard("Operator", "Total:3");
+                    $operatorTotalCount = str_pad((string)$this->usersModel->getOperatorTotalCount(), 2, '0', STR_PAD_LEFT);
+                    $cardOperator = new CustomCard("Opérateurs", "Total: $operatorTotalCount");
                     $cardOperator->setBackgroundColor("#8e24aa");
                     $cardOperator->setTextColor("#fff");
                     $cardOperator->setIcon("badge");
 
+                    $cardAdmin = new CustomCard("Admin", "Total: 00");
+                    $cardAdmin->setBackgroundColor("#795548");
+                    $cardAdmin->setTextColor("#fff");
+                    $cardAdmin->setIcon("supervisor_account");
+
                     $this->templateRenderer->setSidebarContent("test");
-                    $this->templateRenderer->setBodyContent($this->dashboardPageContent([$cardVoter, $cardOperator]));
+                    $this->templateRenderer->setBodyContent($this->dashboardPageContent([$cardVoter, $cardOperator, $cardAdmin]));
                     return $this->templateRenderer->render("Dashboard");
                 } else {
                     // L'ID dans l'URL est invalide

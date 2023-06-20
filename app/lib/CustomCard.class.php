@@ -51,7 +51,7 @@ class CustomCard
         $iconTextColor = $this->iconTextColor;
         if (isset($this->icon)) {
             return <<<HTML
-            <span class="material-icons-outlined rounded-circle" style="background-color:$iconBackgroundColor; color:$iconTextColor; font-size:3rem;">
+            <span class="material-icons-outlined rounded-circle p-1" style="background-color:$iconBackgroundColor; color:$iconTextColor; font-size:2.5rem;">
                 $this->icon
             </span>
             HTML;

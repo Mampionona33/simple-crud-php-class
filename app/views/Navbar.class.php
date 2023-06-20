@@ -27,7 +27,7 @@ class Navbar
 
     private function renderMenuButton()
     {
-        return '<button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop" aria-controls="staticBackdrop">
+        return '<button class="btn btn-primary d-flex align-items-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop" aria-controls="staticBackdrop">
                     <span class="material-icons">menu</span>
                 </button>';
     }

@@ -14,7 +14,7 @@ class TemplateRenderer
     public function render($title = "Document", $bodyContent = null, $sidebarContent = null): string
     {
         ob_start();
-        ?>
+?>
         <!DOCTYPE html>
         <html lang="fr">
 
@@ -42,7 +42,7 @@ class TemplateRenderer
         </body>
 
         </html>
-        <?php
+<?php
         return ob_get_clean();
     }
 
@@ -69,7 +69,10 @@ class TemplateRenderer
             return '
             <div class="offcanvas offcanvas-start" data-bs-backdrop="static" tabindex="-1" id="staticBackdrop" aria-labelledby="staticBackdropLabel">
                 <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="staticBackdropLabel">Menu</h5>
+                    <h5 class="offcanvas-title d-flex align-items-center gap-1" id="staticBackdropLabel">
+                        <span class="material-icons">menu</span>    
+                        Menu
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">

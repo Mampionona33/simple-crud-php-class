@@ -104,4 +104,10 @@ class UsersModel
     {
         return $this->dataManipulator->createData($this->nomTable, $data);
     }
+
+    public function getOperatorTotalCount()
+    {
+        $condition = "role = 'operator'";
+        return $this->dataManipulator->getCount($this->nomTable, $condition);
+    }
 }
