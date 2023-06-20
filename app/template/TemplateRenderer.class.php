@@ -34,7 +34,7 @@ class TemplateRenderer
             <?php echo $this->renderMessage(); ?>
             <?php echo $this->renderModal(); ?>
             <?php echo $this->errorMessage ? $this->renderErrorMessage() : null; ?>
-            <div class="container">
+            <div class="container-fluid">
                 <?php echo $this->sideBarContent ? $this->renderSideBar() : null; ?>
                 <?php echo $this->bodyContent ? $this->renderBodyContent() : null; ?>
             </div>
@@ -50,7 +50,7 @@ class TemplateRenderer
     {
         if ($this->bodyContent) {
             return '
-            <div class="d-flex align-items-center justify-content-center min-vh-100">
+            <div class="d-flex min-vh-100">
                 ' . $this->bodyContent . '
             </div>
             ';

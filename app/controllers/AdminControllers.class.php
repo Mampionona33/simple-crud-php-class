@@ -30,10 +30,10 @@ class AdminControllers extends VisitorController
                     $this->templateRenderer->setNavbarContent($this->navBar->render());
 
                     $cardVoter = new CustomCard("Electeur", "Total:1000");
-                    $cardVoter->setIcon("face");
+                    $cardVoter->setIcon("how_to_vote");
 
                     $cardUser = new CustomCard("User", "Total:3");
-                    $cardUser->setIcon("person");
+                    $cardUser->setIcon("badge");
 
                     $this->templateRenderer->setSidebarContent("test");
                     $this->templateRenderer->setBodyContent($this->dashboardPageContent([$cardVoter, $cardUser]));
@@ -55,9 +55,11 @@ class AdminControllers extends VisitorController
             $content .= $value->__invoke();
         }
         return <<<HTML
-        <div class="d-flex justify-content-between">
+        <div class="d-flex p-5 align-self-sm-start justify-content-start" style="margin-top: 3rem;">
             $content
         </div>
         HTML;
     }
+
+
 }

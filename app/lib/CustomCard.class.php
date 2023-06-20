@@ -59,18 +59,18 @@ class CustomCard
         }
 
         return <<<HTML
-    <div class="global-data-card m-3">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body  " style="background-color: $cardBackgroundColor;">
-                <div class="d-flex gap-5 align-items-center">
-                    <h5 class="card-title">$cardTitle</h5>
-                    $iconHtml
+        <div class="global-data-card m-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body  " style="background-color: $cardBackgroundColor;">
+                    <div class="d-flex gap-5 align-items-center">
+                        <h5 class="card-title">$cardTitle</h5>
+                        $iconHtml
+                    </div>
+                    <h6 class="card-subtitle mb-2 text-muted">$content</h6>
                 </div>
-                <h6 class="card-subtitle mb-2 text-muted">$content</h6>
             </div>
         </div>
-    </div>
-    HTML;
+        HTML;
     }
 
 }

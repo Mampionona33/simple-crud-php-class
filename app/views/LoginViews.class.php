@@ -16,7 +16,7 @@ class LoginViews
     private function loginForm(): string
     {
         return <<<HTML
-        <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="d-flex w-100 justify-content-center align-items-center" style="height: 100vh;">
             <div class="">
                 <form method="POST" class="d-flex flex-column gap-2 bg-white rounded shadow p-4">
                     <div class="form-group row">
