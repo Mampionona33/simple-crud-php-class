@@ -20,7 +20,7 @@ class OperatorController extends VisitorController
         }
     }
 
-    public function getVoters(array $columns = array(), $condition = ""): string
+    public function voterLists(array $columns = array(), $condition = ""): string
     {
         // var_dump($this->pathname);
         if ($this->role === "operator") {
@@ -31,7 +31,7 @@ class OperatorController extends VisitorController
                     $this->tableVoters->setBtnEditVisible(true);
                     $this->tableVoters->setAddBtnVisible(true);
                     $this->tableVoters->setBtnDeleteVisible(true);
-                    return parent::getVoters($columns, $condition);
+                    return parent::voterLists($columns, $condition);
                 } else {
                     // L'ID dans l'URL est invalide
                     $this->templateRenderer->setError("Error", "User not authenticated");

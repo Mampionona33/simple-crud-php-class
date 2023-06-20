@@ -19,7 +19,7 @@ class VisitorController extends AbstractUserController
         return "test";
     }
 
-    public function getVoters(array $columns = array(), $condition = ""): string
+    public function voterLists(array $columns = array(), $condition = ""): string
     {
         // Create table voters
         $listUsers = $this->votersModel->getVoters($columns, $condition);

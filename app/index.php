@@ -28,7 +28,7 @@ $adminControllers = new AdminControllers($templateRenderer);
 
 switch ($uri) {
     case '/':
-        echo $visitorController->getVoters();
+        echo $visitorController->voterLists();
         break;
 
     case '/login':
@@ -36,11 +36,11 @@ switch ($uri) {
         break;
 
     case '/admin/dashboard':
-        echo  $adminControllers->dashboard();
+        echo $adminControllers->dashboard();
         break;
 
     case '/operator/dashboard':
-        echo $operatorController->getVoters();
+        echo $operatorController->voterLists();
         break;
 
     case '/logout':
