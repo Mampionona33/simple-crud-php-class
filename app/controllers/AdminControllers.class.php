@@ -6,7 +6,7 @@ class AdminControllers extends VisitorController
     private $id;
     protected $navBar;
 
-    function __construct(TemplateRenderer $templateRenderer)
+    public function __construct(TemplateRenderer $templateRenderer)
     {
         parent::__construct($templateRenderer);
         $this->pathname = $_SERVER["REQUEST_URI"];
@@ -20,7 +20,7 @@ class AdminControllers extends VisitorController
         }
     }
 
-    function dashboard(): string
+    public function dashboard(): string
     {
         if ($this->role === 'admin') {
             if (strpos($this->pathname, '/admin/dashboard') !== false) {
@@ -29,10 +29,14 @@ class AdminControllers extends VisitorController
                     $this->navBar->setMenuVisible(true);
                     $this->templateRenderer->setNavbarContent($this->navBar->render());
 
-
                     $cardVoter = new CustomCard("Electeur", "Total:1000");
+                    $cardVoter->setIcon("face");
+
+                    $cardUser = new CustomCard("User", "Total:3");
+                    $cardUser->setIcon("person");
+
                     $this->templateRenderer->setSidebarContent("test");
-                    $this->templateRenderer->setBodyContent($cardVoter());
+                    $this->templateRenderer->setBodyContent($this->dashboardPageContent([$cardVoter, $cardUser]));
                     return $this->templateRenderer->render("Dashboard");
                 } else {
                     // L'ID dans l'URL est invalide
@@ -44,22 +48,16 @@ class AdminControllers extends VisitorController
         return "Error: Unable to get voters";
     }
 
-    // private function customCard(): string
-    // {
-    //     return '
-    //     <div class="global-data-card">
-    //         <div class="card border-0">
-    //             <div class="card-body" style="background-color: red;">
-    //                 <div class="d-flex gap-5 align-items-center">
-    //                     <h5 class="card-title">Voter</h5>
-    //                     <span class="material-icons-outlined rounded-circle p-2" style="background-color:#fff"}>
-    //                         people_alt
-    //                     </span>
-    //                 </div>
-    //                 <h6 class="card-subtitle mb-2 text-muted">Total: 1000</h6>
-    //             </div>
-    //         </div>
-    //     </div>
-    //     ';
-    // }
+    private function dashboardPageContent(array $elements): string
+    {
+        $content = "";
+        foreach ($elements as $value) {
+            $content .= $value->__invoke();
+        }
+        return <<<HTML
+        <div class="d-flex justify-content-between">
+            $content
+        </div>
+        HTML;
+    }
 }
