@@ -34,14 +34,18 @@ class AdminControllers extends VisitorController
 
                     // créer la carte pour les électeurs
                     $totalVoterCount = str_pad((string) $this->votersModel->getTotalVotersCount(), 2, "0", STR_PAD_LEFT);
-                    $cardVoter = new CustomCard("Electeur", "Total : $totalVoterCount");
+                    $cardVoter = new CustomCard("Électeurs", "Total : $totalVoterCount");
+                    $cardVoter->setBackgroundColor("#39a275");
+                    $cardVoter->setTextColor("#fff");
                     $cardVoter->setIcon("how_to_vote");
 
-                    $cardUser = new CustomCard("User", "Total:3");
-                    $cardUser->setIcon("badge");
+                    $cardOperator = new CustomCard("Operator", "Total:3");
+                    $cardOperator->setBackgroundColor("#8e24aa");
+                    $cardOperator->setTextColor("#fff");
+                    $cardOperator->setIcon("badge");
 
                     $this->templateRenderer->setSidebarContent("test");
-                    $this->templateRenderer->setBodyContent($this->dashboardPageContent([$cardVoter, $cardUser]));
+                    $this->templateRenderer->setBodyContent($this->dashboardPageContent([$cardVoter, $cardOperator]));
                     return $this->templateRenderer->render("Dashboard");
                 } else {
                     // L'ID dans l'URL est invalide
@@ -65,6 +69,4 @@ class AdminControllers extends VisitorController
         </div>
         HTML;
     }
-
-
 }

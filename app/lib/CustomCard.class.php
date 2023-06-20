@@ -6,6 +6,8 @@ class CustomCard
     private $cardBackgroundColor = "#fff";
     private $iconBackgroundColor = "#ddd";
     private $icon;
+    private $textColor = "#000";
+    private $iconTextColor = "#000";
 
     public function __construct(string $title, string $content)
     {
@@ -23,7 +25,7 @@ class CustomCard
         $this->content = $content;
     }
 
-    private function setBackgroundColor($cardBackgroundColor): void
+    public function setBackgroundColor($cardBackgroundColor): void
     {
         $this->cardBackgroundColor = $cardBackgroundColor;
     }
@@ -33,12 +35,23 @@ class CustomCard
         $this->iconBackgroundColor = $iconBackgroundColor;
     }
 
+    public function setTextColor($textColor): void
+    {
+        $this->textColor = $textColor;
+    }
+
+    public function setIconTextColor($iconTextColor): void
+    {
+        $this->iconTextColor = $iconTextColor;
+    }
+
     private function renderIcon(): mixed
     {
         $iconBackgroundColor = $this->iconBackgroundColor;
+        $iconTextColor = $this->iconTextColor;
         if (isset($this->icon)) {
             return <<<HTML
-            <span class="material-icons-outlined rounded-circle" style="background-color:$iconBackgroundColor; font-size:3rem">
+            <span class="material-icons-outlined rounded-circle" style="background-color:$iconBackgroundColor; color:$iconTextColor; font-size:3rem;">
                 $this->icon
             </span>
             HTML;
@@ -51,6 +64,7 @@ class CustomCard
         $cardTitle = $this->title;
         $content = $this->content;
         $cardBackgroundColor = $this->cardBackgroundColor;
+        $textColor = $this->textColor;
         $icon = $this->renderIcon();
 
         $iconHtml = '';
@@ -61,16 +75,15 @@ class CustomCard
         return <<<HTML
         <div class="global-data-card m-3">
             <div class="card border-0 shadow-sm">
-                <div class="card-body  " style="background-color: $cardBackgroundColor;">
+                <div class="card-body" style="background-color: $cardBackgroundColor; color: $textColor;">
                     <div class="d-flex gap-5 align-items-center">
-                        <h5 class="card-title">$cardTitle</h5>
+                        <h5 class="card-title text-capitalize">$cardTitle</h5>
                         $iconHtml
                     </div>
-                    <h6 class="card-subtitle mb-2 text-muted">$content</h6>
+                    <h6 class="card-subtitle mb-2" style="color: $textColor;">$content</h6>
                 </div>
             </div>
         </div>
         HTML;
     }
-
 }

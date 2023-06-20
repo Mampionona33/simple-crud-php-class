@@ -3,7 +3,7 @@ function class_autoloader($className)
 {
     // Liste des dossiers où chercher les classes
     $directories = [
-        dirname(__DIR__)  . '/api_/',
+        dirname(__DIR__)  . '/Api/',
         dirname(__DIR__) . '/controllers/',
         dirname(__DIR__)  . '/models/',
         dirname(__DIR__)  . '/views/',
