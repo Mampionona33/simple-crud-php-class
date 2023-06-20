@@ -109,4 +109,25 @@ class DataManipulator
             return false;
         }
     }
+
+    public function getCount(string $tableName, string $condition = ""): int
+    {
+        $query = "SELECT COUNT(*) AS total FROM $tableName";
+
+        if (!empty($condition)) {
+            $query .= " WHERE " . $condition;
+        }
+
+        $stmt = $this->db->prepare($query);
+
+        try {
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return (int) $result['total'];
+        } catch (PDOException $e) {
+            echo "Erreur lors de la récupération du nombre de lignes : " . $e->getMessage();
+            exit();
+        }
+    }
+
 }

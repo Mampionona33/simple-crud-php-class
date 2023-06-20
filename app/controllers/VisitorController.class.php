@@ -42,4 +42,9 @@ class VisitorController extends AbstractUserController
         </div>
         HTML;
     }
+
+    protected function getVoterModel(): VotersModel
+    {
+        return $this->votersModel;
+    }
 }

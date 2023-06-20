@@ -80,4 +80,13 @@ class VotersModel
         }
         return false;
     }
+
+    public function getTotalVotersCount(): int
+    {
+        return $this->dataManipulator->getCount($this->tableName);
+    }
+
+
+
+
 }

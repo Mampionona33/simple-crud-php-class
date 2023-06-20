@@ -5,10 +5,13 @@ class AdminControllers extends VisitorController
     private $role;
     private $id;
     protected $navBar;
+    protected $votersModel;
 
     public function __construct(TemplateRenderer $templateRenderer)
     {
         parent::__construct($templateRenderer);
+
+        $this->votersModel = parent::getVoterModel();
         $this->pathname = $_SERVER["REQUEST_URI"];
 
         if (isset($_SESSION["user"]["role"])) {
@@ -29,7 +32,9 @@ class AdminControllers extends VisitorController
                     $this->navBar->setMenuVisible(true);
                     $this->templateRenderer->setNavbarContent($this->navBar->render());
 
-                    $cardVoter = new CustomCard("Electeur", "Total:1000");
+                    // créer la carte pour les électeurs
+                    $totalVoterCount = str_pad((string) $this->votersModel->getTotalVotersCount(), 2, "0", STR_PAD_LEFT);
+                    $cardVoter = new CustomCard("Electeur", "Total : $totalVoterCount");
                     $cardVoter->setIcon("how_to_vote");
 
                     $cardUser = new CustomCard("User", "Total:3");
