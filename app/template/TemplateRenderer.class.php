@@ -14,7 +14,7 @@ class TemplateRenderer
     public function render($title = "Document", $bodyContent = null, $sidebarContent = null): string
     {
         ob_start();
-?>
+        ?>
         <!DOCTYPE html>
         <html lang="fr">
 
@@ -42,7 +42,7 @@ class TemplateRenderer
         </body>
 
         </html>
-<?php
+        <?php
         return ob_get_clean();
     }
 
@@ -75,7 +75,7 @@ class TemplateRenderer
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
-                <div class="offcanvas-body">
+                <div class="offcanvas-body p-0">
                     <div>'
                 . $this->sideBarContent .
                 '</div>

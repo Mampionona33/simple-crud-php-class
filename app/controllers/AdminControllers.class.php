@@ -42,7 +42,7 @@ class AdminControllers extends VisitorController
                     $cardVoter->setTextColor("#fff");
                     $cardVoter->setIcon("how_to_vote");
 
-                    $operatorTotalCount = str_pad((string)$this->usersModel->getOperatorTotalCount(), 2, '0', STR_PAD_LEFT);
+                    $operatorTotalCount = str_pad((string) $this->usersModel->getOperatorTotalCount(), 2, '0', STR_PAD_LEFT);
                     $cardOperator = new CustomCard("Opérateurs", "Total: $operatorTotalCount");
                     $cardOperator->setBackgroundColor("#8e24aa");
                     $cardOperator->setTextColor("#fff");
@@ -53,7 +53,12 @@ class AdminControllers extends VisitorController
                     $cardAdmin->setTextColor("#fff");
                     $cardAdmin->setIcon("supervisor_account");
 
-                    $this->templateRenderer->setSidebarContent("test");
+                    $sidebarItems = [
+                        ['url' => 'https://8081-mampionona3-simplecrudp-6517h2kkdmy.ws-eu100.gitpod.io/admin/manage/voters?admin_id=1', 'title' => 'Gérer électeurs'],
+                        ['url' => 'https://8081-mampionona3-simplecrudp-6517h2kkdmy.ws-eu100.gitpod.io/admin/manage/users?admin_id=1', 'title' => 'Gérer utilisateurs']
+                    ];
+
+                    $this->templateRenderer->setSidebarContent($this->renderSideBarItems($sidebarItems));
                     $this->templateRenderer->setBodyContent($this->dashboardPageContent([$cardVoter, $cardOperator, $cardAdmin]));
                     return $this->templateRenderer->render("Dashboard");
                 } else {
@@ -78,4 +83,28 @@ class AdminControllers extends VisitorController
         </div>
         HTML;
     }
+
+    private function renderSideBarItems(array $items): string
+    {
+        $sidebarItems = "";
+        $count = count($items);
+
+        foreach ($items as $index => $item) {
+            $url = $item['url'];
+            $title = $item['title'];
+            $sidebarItems .= "<a class=\"text-decoration-none text-white\" style=\"font-size: 1.5rem\" href=\"$url\">$title</a>";
+
+            // Ajoute le <hr> uniquement si ce n'est pas la dernière itération
+            if ($index !== $count - 1) {
+                $sidebarItems .= "<hr class=\"p-0 m-0 text-white\">";
+            }
+        }
+
+        return <<<HTML
+        <div class="d-flex flex-column bg-dark p-2">
+            $sidebarItems
+        </div>
+        HTML;
+    }
+
 }
