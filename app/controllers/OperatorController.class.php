@@ -42,4 +42,5 @@ class OperatorController extends VisitorController
 
         return "Error: Unable to get voters";
     }
+
 }

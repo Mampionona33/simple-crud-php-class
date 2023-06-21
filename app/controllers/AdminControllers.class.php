@@ -8,6 +8,11 @@ class AdminControllers extends VisitorController
     protected $votersModel;
     protected $usersModel;
 
+    private $sidebarItems = [
+        ['url' => 'manage_voters', 'title' => 'Gérer électeurs'],
+        ['url' => 'manageusers', 'title' => 'Gérer utilisateurs']
+    ];
+
     public function __construct(TemplateRenderer $templateRenderer)
     {
         parent::__construct($templateRenderer);
@@ -31,9 +36,8 @@ class AdminControllers extends VisitorController
         if ($this->role === 'admin') {
             if (strpos($this->pathname, '/admin/dashboard') !== false) {
                 if (isset($_GET["id"]) && $_GET["id"] == $this->id) {
-                    $this->navBar = $this->getNavbar();
-                    $this->navBar->setMenuVisible(true);
-                    $this->templateRenderer->setNavbarContent($this->navBar->render());
+                    $this->setNavbar();
+                    $this->setSidebar($this->sidebarItems);
 
                     // créer la carte pour les électeurs
                     $totalVoterCount = str_pad((string) $this->votersModel->getTotalVotersCount(), 2, "0", STR_PAD_LEFT);
@@ -53,12 +57,6 @@ class AdminControllers extends VisitorController
                     $cardAdmin->setTextColor("#fff");
                     $cardAdmin->setIcon("supervisor_account");
 
-                    $sidebarItems = [
-                        ['url' => 'https://8081-mampionona3-simplecrudp-6517h2kkdmy.ws-eu100.gitpod.io/admin/manage/voters?admin_id=1', 'title' => 'Gérer électeurs'],
-                        ['url' => 'https://8081-mampionona3-simplecrudp-6517h2kkdmy.ws-eu100.gitpod.io/admin/manage/users?admin_id=1', 'title' => 'Gérer utilisateurs']
-                    ];
-
-                    $this->templateRenderer->setSidebarContent($this->renderSideBarItems($sidebarItems));
                     $this->templateRenderer->setBodyContent($this->dashboardPageContent([$cardVoter, $cardOperator, $cardAdmin]));
                     return $this->templateRenderer->render("Dashboard");
                 } else {
@@ -69,6 +67,30 @@ class AdminControllers extends VisitorController
             }
         }
         return "Error: Unable to get voters";
+    }
+
+    public function routeManageVoters(): string
+    {
+        $this->setNavbar();
+        $this->setSidebar($this->sidebarItems);
+
+        $this->templateRenderer->setBodyContent("test");
+        return $this->voterLists([], "");
+    }
+
+
+
+    public function voterLists(array $columns = array(), $condition = ""): string
+    {
+        if ($this->role === "admin") {
+            if (strpos($this->pathname, '/admin/manage_voters') !== false) {
+                $this->tableVoters->setBtnEditVisible(true);
+                $this->tableVoters->setAddBtnVisible(true);
+                $this->tableVoters->setBtnDeleteVisible(true);
+                return parent::voterLists($columns, $condition);
+            }
+        }
+        return parent::voterLists($columns, $condition);
     }
 
     private function dashboardPageContent(array $elements): string
@@ -89,22 +111,38 @@ class AdminControllers extends VisitorController
         $sidebarItems = "";
         $count = count($items);
 
+        // Ajoute le lien du tableau de bord avec l'ID par défaut
+        $sidebarItems .= "<a class=\"text-decoration-none text-white\" style=\"font-size: 1.5rem\" href=\"dashboard?id={$this->id}\">Tableau de bord</a>";
+
+        // Ajoute les autres éléments de la barre latérale
         foreach ($items as $index => $item) {
             $url = $item['url'];
             $title = $item['title'];
-            $sidebarItems .= "<a class=\"text-decoration-none text-white\" style=\"font-size: 1.5rem\" href=\"$url\">$title</a>";
 
-            // Ajoute le <hr> uniquement si ce n'est pas la dernière itération
-            if ($index !== $count - 1) {
-                $sidebarItems .= "<hr class=\"p-0 m-0 text-white\">";
-            }
+            $sidebarItems .= "<hr class=\"p-0 m-0 text-white\">"; // Ajoute toujours une ligne de séparation avant les autres éléments
+            $sidebarItems .= "<a class=\"text-decoration-none text-white\" style=\"font-size: 1.5rem\" href=\"$url\">$title</a>";
         }
 
         return <<<HTML
-        <div class="d-flex flex-column bg-dark p-2">
-            $sidebarItems
-        </div>
-        HTML;
+    <div class="d-flex flex-column bg-dark p-2">
+        $sidebarItems
+    </div>
+    HTML;
+    }
+
+
+
+    private function setNavbar()
+    {
+        $this->navBar = $this->getNavbar();
+        $this->navBar->setMenuVisible(true);
+        $this->templateRenderer->setNavbarContent($this->navBar->render());
+    }
+
+    private function setSidebar(array $sidebarItems)
+    {
+        $sidebarContent = $this->renderSideBarItems($sidebarItems);
+        $this->templateRenderer->setSidebarContent($sidebarContent);
     }
 
 }
