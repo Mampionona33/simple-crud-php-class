@@ -7,15 +7,18 @@ class AdminControllers extends VisitorController
     protected $navBar;
     protected $votersModel;
     protected $usersModel;
+    private $userList;
+    private $userTableHeader = ["id_user", "Nom", "Prénom", "date de naissance", "civilité", "adresse", "email", "tel", "role"];
 
     private $sidebarItems = [
         ['url' => 'manage_voters', 'title' => 'Gérer électeurs'],
-        ['url' => 'manageusers', 'title' => 'Gérer utilisateurs']
+        ['url' => 'manage_users', 'title' => 'Gérer utilisateurs']
     ];
 
     public function __construct(TemplateRenderer $templateRenderer)
     {
         parent::__construct($templateRenderer);
+
 
         $this->votersModel = parent::getVoterModel();
         $this->pathname = $_SERVER["REQUEST_URI"];
@@ -29,6 +32,7 @@ class AdminControllers extends VisitorController
         }
 
         $this->usersModel = new UsersModel();
+        $this->userList = $this->usersModel->getUsers();
     }
 
     public function dashboard(): string
@@ -78,8 +82,6 @@ class AdminControllers extends VisitorController
         return $this->voterLists([], "");
     }
 
-
-
     public function voterLists(array $columns = array(), $condition = ""): string
     {
         if ($this->role === "admin") {
@@ -91,6 +93,27 @@ class AdminControllers extends VisitorController
             }
         }
         return parent::voterLists($columns, $condition);
+    }
+
+    public function routeManageUsers()
+    {
+        $this->setNavbar();
+        $this->setSidebar($this->sidebarItems);
+        $tableUsers = new CustomTable("User", $this->userTableHeader);
+        $tableUsers->setBtnEditeState(true);
+        $tableUsers->setAddBtnVisible(true);
+        $tableUsers->setSearchBarVisible(true);
+        $this->templateRenderer->setBodyContent($this->renderUsersTable($tableUsers->renderTable()));
+        return $this->templateRenderer->render("Manage Users");
+    }
+
+    private function renderUsersTable($component): string
+    {
+        return <<<HTML
+            <div class="d-flex w-100 justify-content-center">
+                $component
+            </div>
+        HTML;
     }
 
     private function dashboardPageContent(array $elements): string
@@ -112,7 +135,7 @@ class AdminControllers extends VisitorController
         $count = count($items);
 
         // Ajoute le lien du tableau de bord avec l'ID par défaut
-        $sidebarItems .= "<a class=\"text-decoration-none text-white\" style=\"font-size: 1.5rem\" href=\"dashboard?id={$this->id}\">Tableau de bord</a>";
+        $sidebarItems .= "<a class=\"text-decoration-none text-white\" style=\"font-size: 1.3rem\" href=\"dashboard?id={$this->id}\">Tableau de bord</a>";
 
         // Ajoute les autres éléments de la barre latérale
         foreach ($items as $index => $item) {
@@ -120,7 +143,7 @@ class AdminControllers extends VisitorController
             $title = $item['title'];
 
             $sidebarItems .= "<hr class=\"p-0 m-0 text-white\">"; // Ajoute toujours une ligne de séparation avant les autres éléments
-            $sidebarItems .= "<a class=\"text-decoration-none text-white\" style=\"font-size: 1.5rem\" href=\"$url\">$title</a>";
+            $sidebarItems .= "<a class=\"text-decoration-none text-white\" style=\"font-size: 1.3rem\" href=\"$url\">$title</a>";
         }
 
         return <<<HTML
@@ -129,8 +152,6 @@ class AdminControllers extends VisitorController
     </div>
     HTML;
     }
-
-
 
     private function setNavbar()
     {
@@ -144,5 +165,4 @@ class AdminControllers extends VisitorController
         $sidebarContent = $this->renderSideBarItems($sidebarItems);
         $this->templateRenderer->setSidebarContent($sidebarContent);
     }
-
 }

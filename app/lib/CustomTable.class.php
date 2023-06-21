@@ -107,8 +107,6 @@ class CustomTable
 
     public function renderTable(): string
     {
-
-        $btnEdit = '<button class="btn btn-primary">Edit</button>';
         $tableHeaders = "";
         $searchBar = $this->renderSearchBar();
         $addBtn = $this->renderAddButton();
@@ -124,8 +122,11 @@ class CustomTable
             }
         }
 
+        $colspan = count($this->header);
+
         if ($this->btnEditState || $this->btnDeleteState || $this->btnDetailsState) {
-            $tableHeaders .= "<th>actions</th>";
+            $tableHeaders .= "<th>Actions</th>";
+            $colspan++;
         }
 
         $tableBody = "";
@@ -140,7 +141,6 @@ class CustomTable
                         $tableBody .= "<td>$contents</td>";
                     }
                 } else {
-
                     foreach (array_slice($rows, 1) as $contents) {
                         $tableBody .= "<td>$contents</td>";
                     }
@@ -163,7 +163,7 @@ class CustomTable
             }
         } else {
             $tableBody .= "<tr>";
-            $tableBody .= "<td colspan=" . count($this->header) . " >No data Found</td>";
+            $tableBody .= "<td colspan=\"$colspan\">No data Found</td>";
             $tableBody .= "</tr>";
         }
 
@@ -188,6 +188,4 @@ class CustomTable
         </div>
         HTML;
     }
-
-
 }

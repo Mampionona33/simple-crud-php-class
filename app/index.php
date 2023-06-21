@@ -38,6 +38,9 @@ switch ($uri) {
     case '/admin/manage_voters':
         echo $adminControllers->routeManageVoters();
         break;
+    case '/admin/manage_users':
+        echo $adminControllers->routeManageUsers();
+        break;
 
     case '/admin/dashboard':
         echo $adminControllers->dashboard();
