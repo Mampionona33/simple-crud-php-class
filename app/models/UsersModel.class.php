@@ -2,7 +2,7 @@
 class UsersModel
 {
     private $out;
-    private $col =  [
+    private $col = [
         [
             'name' => 'id_user',
             'type' => 'INT',
@@ -22,9 +22,9 @@ class UsersModel
             'auto_increment' => false,
         ],
         [
-            'name' => 'age',
-            'type' => 'BIGINT',
-            'required' => false,
+            'name' => 'birthday',
+            'type' => 'Date',
+            'required' => true,
             'auto_increment' => false,
         ],
         [
@@ -69,7 +69,7 @@ class UsersModel
 
     private $tableManipulator;
     private $dataManipulator;
-    private $nomTable = "users_";
+    private $nomTable = "Users";
 
     public function __construct()
     {

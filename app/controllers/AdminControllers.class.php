@@ -99,9 +99,18 @@ class AdminControllers extends VisitorController
     {
         $this->setNavbar();
         $this->setSidebar($this->sidebarItems);
-        $tableUsers = new CustomTable("User", $this->userTableHeader);
+
+        // Remove user password from data
+        foreach ($this->userList as &$values) {
+            if (isset($values["password"])) {
+                unset($values["password"]);
+            }
+        }
+
+        $tableUsers = new CustomTable("User", $this->userTableHeader, $this->userList);
         $tableUsers->setBtnEditeState(true);
         $tableUsers->setAddBtnVisible(true);
+        $tableUsers->setBtnDeleteState(true);
         $tableUsers->setSearchBarVisible(true);
         $this->templateRenderer->setBodyContent($this->renderUsersTable($tableUsers->renderTable()));
         return $this->templateRenderer->render("Manage Users");
