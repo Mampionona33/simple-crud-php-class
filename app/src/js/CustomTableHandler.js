@@ -2,275 +2,286 @@ import { Modal, Toast } from "bootstrap";
 import { CustomToast } from "./CustomToast";
 
 export class CustomTableHandler {
-  constructor(formGenerator) {
-    this.formGenerator = formGenerator;
-    this.handleBtnAdd(this.formGenerator);
-    this.handleBtnEdit(this.formGenerator);
-  }
+  constructor(formTemplate, concernedRessource, apiEndpoint, idVariableName) {
+    // initialise variables
+    this.formTemplate = formTemplate;
+    this.modalAddTitle = `Créer ${concernedRessource}`;
+    this.modalElement = document.createElement("div");
+    this.modalElement.classList.add("modal");
+    this.modalEditTitle = `Modifier ${concernedRessource}`;
+    this.apiEndpoint = apiEndpoint;
+    this.idVariableName = idVariableName;
 
-  handleBtnEdit(formGenerator) {
-    const editButtons = document.querySelectorAll('button[name="edit"]');
-    // Edit
-    editButtons.forEach((button) => {
-      button.addEventListener("click", async (ev) => {
+    // Ecouter le bouton add
+    this.buttonAdd = document.getElementById("table-btn-add");
+    this.buttonAdd.addEventListener("click", this.handleClickAdd.bind(this));
+
+    // Ecouter si le bouton edit est cliqué
+    this.buttonEdit = document.querySelectorAll('button[name="edit"]');
+    this.buttonEdit.forEach((button) => {
+      button.addEventListener("click", (ev) => {
         ev.preventDefault();
-        const rowId = parseInt(ev.target.dataset.id);
-        const apiPath = ev.target.dataset.apiPath;
-        const currentPort = window.location.port;
-        const currentHost = window.location.host;
-        let currentBasedUrl;
-
-        if (currentPort) {
-          currentBasedUrl = `${currentHost}:${currentPort}`;
-        } else {
-          currentBasedUrl = currentHost;
-        }
-
-        try {
-          // Récupérer les données de l'API
-          const data = await this.fetchDataFromAPI(apiPath, rowId);
-
-          // Générer le contenu du modal en utilisant les données appropriées
-          const modalContent = generateModalContent(
-            "Modifier l'électeur",
-            formGenerator(data),
-            "edit"
-          );
-
-          // Créer un élément HTML pour le modal
-          const modalElement = createModalElement(modalContent);
-
-          // Créer une instance du modal Bootstrap avec l'option backdrop:true et keyboard:true
-          const modal = new Modal(modalElement, {
-            backdrop: true,
-            keyboard: true,
-          });
-
-          // Ajouter un écouteur d'événements sur le bouton de fermeture du modal
-          const closeButton = modalElement.querySelector(
-            '[data-bs-dismiss="modal"]'
-          );
-          closeButton.addEventListener("click", function () {
-            modal.hide();
-            modalElement.remove();
-          });
-
-          // Ajouter un écouteur d'événements au document pour supprimer le modal en cliquant à l'extérieur
-          const removeModalOnOutsideClick = function (event) {
-            if (!modalElement.contains(event.target)) {
-              modal.hide();
-              modalElement.remove();
-              document.removeEventListener("click", removeModalOnOutsideClick);
-            }
-          };
-          document.addEventListener("click", removeModalOnOutsideClick);
-
-          // Afficher le modal
-          modal.show();
-        } catch (error) {
-          console.error(error);
-        }
+        // recuperer l'id de la ligne pour la recuperer dans handleClickEdit
+        this.rowId = ev.target.dataset.id;
+        // console.log(ev.target);
+        this.handleClickEdit.bind(this)();
       });
     });
-  }
 
-  handleBtnAdd(formGenerator) {
-    const addButton = document.getElementById("table-btn-add");
-    addButton.addEventListener("click", async (ev) => {
-      ev.preventDefault();
-
-      const modalContent = generateModalContent(
-        "Créer un électeur",
-        formGenerator([]),
-        "add",
-      );
-
-      const modalElement = createModalElement(modalContent);
-      document.body.appendChild(modalElement);
-
-      // Créer une instance du modal Bootstrap avec l'option backdrop:true et keyboard:true
-      const modal = new Modal(modalElement, { backdrop: true, keyboard: true });
-
-      modal.show();
-
-      const submitButton = modalElement.querySelector("#submit_modal");
-
-      if(submitButton){
-        submitButton.addEventListener("click", async function () {
-          try {
-            const data = await handleSubmit(modalElement);
-            if (data && data.status === 201) {
-              closeModal(modal, modalElement);
-              showSuccessToast(data.message);
-            } else if (data && data.status === 401) {
-              showErrorToast(data.error);
-            }
-          } catch (error) {
-            console.error(error);
-          }
+    // Ecouter le boutton delete
+    this.buttonDelete = document.querySelectorAll('button[name="delete"]');
+    this.buttonDelete.forEach((buttonDelete) => {
+      if (buttonDelete) {
+        buttonDelete.addEventListener("click", (ev) => {
+          ev.preventDefault();
+          this.rowId = ev.target.dataset.id;
+          this.handleClickDelete();
         });
-        
-        document.addEventListener("submit",async (event)=>{
-          event.preventDefault();
-          console.log(event);
-          // try {
-          //   const data = await handleSubmit(modalElement);
-          //   if (data && data.status === 201) {
-          //     closeModal(modal, modalElement);
-          //     showSuccessToast(data.message);
-          //   } else if (data && data.status === 401) {
-          //     showErrorToast(data.error);
-          //   }
-          // } catch (error) {
-          //   console.error(error);
-          // }
-        })
       }
-      // Ajouter un écouteur d'événements sur le bouton de fermeture du modal
-      const closeButton = modalElement.querySelector(
-        '[data-bs-dismiss="modal"]'
-      );
-
-      closeButton.addEventListener("click", function () {
-        closeModal(modal, modalElement);
-      });
-
-      // Ajouter un écouteur d'événements sur l'événement "hide" du modal
-      modalElement.addEventListener("hide.bs.modal", function () {
-        modalElement.remove();
-      });
     });
 
-    
+    // Remove modal if hidden
+    this.modalElement.addEventListener(
+      "hide.bs.modal",
+      this.removeModal.bind(this)
+    );
   }
 
-  // Méthode pour récupérer les données de l'API
-  async fetchDataFromAPI(apiUrl, id) {
+  handleClickDelete(id) {
+    const modalForm = this.generateAlerteConfrimDelete.bind(this)(id);
+    this.showModal(modalForm);
+  }
+
+  handleClickAdd() {
+    const modalForm = this.generateModal(this.modalAddTitle);
+    this.showModal(modalForm);
+  }
+
+  async handleClickEdit() {
+    // Créer un modal au click sur un boutton edit
     try {
-      const response = await fetch(`/api/${apiUrl}=${id}`);
+      const rowData = await this.getRowDataFromApi();
+      const modalForm = this.generateModal(this.modalEditTitle, rowData[0]);
+      // this.showModal(this.modalEditTitle, rowData[0]);
+      this.showModal(modalForm);
+    } catch (error) {}
+  }
+
+  showModal(modalForm) {
+    // const modalForm = this.generateModal(title, data);
+    this.modalElement.innerHTML = modalForm;
+    document.body.appendChild(this.modalElement);
+    this.modal = new Modal(this.modalElement, {
+      backdrop: true,
+      keyboard: true,
+    });
+
+    // Ecouter l'événement de soumission du formulaire
+    const form = this.modalElement.querySelector("#form_modal");
+    form.addEventListener("submit", this.handleFormSubmit.bind(this));
+    this.modal.show();
+  }
+
+  removeModal() {
+    if (this.modal.hide) {
+      this.modalElement.remove();
+    }
+  }
+
+  handleFormSubmit(ev) {
+    ev.preventDefault();
+    const form = ev.target;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    const submitButton = form.querySelector(`#${this.buttonSubmitId}`);
+    const isEditModal = submitButton.id === "submit_modal_update";
+
+    if (isEditModal) {
+      // Utiliser la méthode "PUT" pour l'édition
+      this.putDataToApi(data).then((resp) => {
+        if (resp.status === 200) {
+          this.createToaster(resp.data.message);
+        }
+        if (resp.status === 401) {
+          this.createToaster(resp.data.error, "error");
+        }
+      });
+    } else if (submitButton.id === "submit_modal_delete") {
+      // Utiliser la méthode "DELETE" pour la suppression
+      this.deleteDataFromApi().then((resp) => {
+        if (resp.status === 200) {
+          this.createToaster(resp.data.message);
+        }
+        if (resp.status === 401) {
+          this.createToaster(resp.data.error, "error");
+        }
+      });
+    } else {
+      // Utiliser la méthode "POST" pour l'ajout
+      this.postDataToApi(data).then((resp) => {
+        if (resp.status === 201) {
+          this.createToaster(resp.data.message);
+        }
+        if (resp.status === 401) {
+          this.createToaster(resp.data.error, "error");
+        }
+      });
+    }
+  }
+
+  async putDataToApi(putData) {
+    try {
+      const requestData = { ...putData, id_voter: this.rowId };
+      const response = await fetch(`/api/${this.apiEndpoint}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestData),
+      });
+      const data = await response.json();
+      return {
+        status: response.status,
+        data: data,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteDataFromApi() {
+    try {
+      const requestData = { id_voter: this.rowId };
+      const response = await fetch(`/api/${this.apiEndpoint}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestData),
+      });
+      const data = await response.json();
+      return {
+        status: response.status,
+        data: data,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  createToaster(message, status = "success") {
+    this.toastElement = document.createElement("div");
+    this.toastElement.classList.add("customToast");
+    this.toastContent = new CustomToast(message, status);
+    this.toastElement.innerHTML = this.toastContent.renderToast();
+    document.body.appendChild(this.toastElement);
+    this.liveToast = document.getElementById("liveToast");
+    this.toast = new Toast(liveToast);
+    this.toast.show();
+
+    setTimeout(() => {
+      this.toast.hide();
+    }, 2500);
+
+    if (status.match(/success/i)) {
+      this.modal.hide();
+      if (this.modal.hide) {
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      }
+    }
+
+    this.liveToast.addEventListener("hidden.bs.toast", () => {
+      this.toastElement.remove();
+    });
+  }
+
+  async postDataToApi(postData) {
+    try {
+      const response = await fetch(`/api/${this.apiEndpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(postData),
+      });
+      const data = await response.json();
+      return {
+        status: response.status,
+        data: data,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getRowDataFromApi() {
+    try {
+      const response = await fetch(
+        `/api/${this.apiEndpoint}?${this.idVariableName}=${this.rowId}`
+      );
       if (!response.ok) {
         throw new Error("Unable to fetch data from API.");
       }
-      const data = await response.json();
-      return data[0];
+      const data = response.json(); // Utilise response.json() pour obtenir les données JSON
+      return data;
     } catch (error) {
       console.error(error);
       throw error;
     }
   }
 
-  async postDataToApi(apiUrl, postData) {
-    try {
-      const response = await fetch(`/api/${apiUrl}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(postData),
-      });
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      throw error;
-    }
-  }
+  generateModal(title = "Title", data = []) {
+    const buttonSubmitText =
+      Object.keys(data).length === 0 ? "Ajouter" : "Modifier";
 
-}
+    this.buttonSubmitId =
+      Object.keys(data).length === 0
+        ? "submit_modal_create"
+        : "submit_modal_update";
 
-
-// End of class start simple functions
-async function handleSubmit(modalElement) {
-  const form = modalElement.querySelector("form");
-  const formData = new FormData(form);
-  const postData = {};
-  for (const [key, value] of formData.entries()) {
-    postData[key] = value;
-  }
-
-  try {
-    const response = await fetch(`/api/voter`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(postData),
-    });
-    const data = await response.json();
-    data.status = response.status;
-
-    return data;
-  } catch (error) {
-    throw error;
-  }
-}
-
-function generateModalContent(title, formContent,action) {
-  return `
-    <form method="POST" class="modal-dialog modal-dialog-centered">
+    return `
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">${title}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+          <div class="modal-header">
+            <h5 class="modal-title">${title}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form id="form_modal">
             <div class="modal-body">
-                <!-- Contenu du formulaire d'édition -->
-                <div class="d-flex justify-content-center align-items-center">
-                    <div class="col-9">
-                        ${formContent}
-                    </div>
-                </div>
+              <div class="d-flex justify-content-center align-items-center">
+                <div class="col-9">${this.formTemplate(data)}</div>
+              </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" id="submit_modal_${action}" class="btn btn-primary">${
-                  action === "edit" ? "Modifier" : "Ajouter"
-                }</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" id="${
+                this.buttonSubmitId
+              }" class="btn btn-primary">${buttonSubmitText}</button>
             </div>
+          </form>
         </div>
-    </form>
+      </div>
     `;
-}
+  }
 
-function createModalElement(content) {
-  const modalElement = document.createElement("div");
-  modalElement.classList.add("modal");
-  modalElement.innerHTML = content;
-  return modalElement;
-}
-
-function closeModal(modal, modalElement) {
-  modal.hide();
-  modalElement.remove();
-}
-
-function showSuccessToast(message) {
-  const toastElement = document.createElement("div");
-  toastElement.classList.add("customToast");
-  const toastContent = new CustomToast(message,"success");
-  toastElement.innerHTML = toastContent.renderToast();
-  document.body.appendChild(toastElement);
-  const liveToast = document.getElementById("liveToast");
-  const toast = new Toast(liveToast);
-  toast.show();
-  setTimeout(function () {
-    toast.hide();
-  }, 1500);
-  liveToast.addEventListener("hidden.bs.toast", function () {
-    window.location.reload();
-  });
-}
-
-function showErrorToast(error) {
-  const toastElement = document.createElement("div");
-  toastElement.classList.add("customToast");
-  const toastContent = new CustomToast(error,"error");
-  toastElement.innerHTML = toastContent.renderToast();
-  document.body.appendChild(toastElement);
-  const liveToast = document.getElementById("liveToast");
-  const toast = new Toast(liveToast);
-  toast.show();
-  setTimeout(function () {
-    toast.hide();
-    removeToast(toastElement);
-  }, 2000);
-}
-
-function removeToast(toastElement) {
-  toastElement.remove();
+  generateAlerteConfrimDelete() {
+    this.buttonSubmitId = "submit_modal_delete";
+    return `
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <form id="form_modal">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirmation de suppression</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="${this.idVariableName}" value="${this.rowId}"/>
+            <p>Êtes-vous sûr de vouloir supprimer cet élément ?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            <button type="submit" id="${this.buttonSubmitId}" class="btn btn-danger">Supprimer</button>
+          </div>
+          </form>
+        </div>
+      </div>
+    `;
+  }
 }

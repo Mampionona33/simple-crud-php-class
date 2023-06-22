@@ -1,7 +1,7 @@
 import { autoloadToast } from "./js/autoloadToast";
 import "./styles/style.scss";
 import * as bootstrap from "bootstrap";
-import { CustomTableHandler } from "./js/CustomTableHandler_";
+import { CustomTableHandler } from "./js/CustomTableHandler";
 
 // modalHandler();
 autoloadToast();
@@ -66,12 +66,24 @@ const generateVoterForm = (data) => {
     `;
 };
 
-const voterTableHandler = new CustomTableHandler(
-  generateVoterForm,
-  "un électeur",
-  "voter",
-  "id_voter"
-);
+window.addEventListener("load", function () {
+  const location = window.location;
+  const pathName = location.pathname;
+  // console.log(pathName);
+
+  if (
+    pathName.match(/operator\/dashboard/i) ||
+    pathName.match(/admin\/manage_voters/i)
+  ) {
+    // console.log(location);
+    const voterTableHandler = new CustomTableHandler(
+      generateVoterForm,
+      "un électeur",
+      "voter",
+      "id_voter"
+    );
+  }
+});
 
 // const generateUserForm =(data)=>{
 //     return  `
