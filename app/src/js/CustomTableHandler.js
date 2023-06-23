@@ -1,6 +1,10 @@
 import { Modal, Toast } from "bootstrap";
 import { CustomToast } from "./CustomToast";
 
+/**
+ * classe permet de gérer les actions sur les bouttons
+ * des objets instancier avec la classe CustomTable.class.php
+ */
 export class CustomTableHandler {
   constructor(formTemplate, concernedRessource, apiEndpoint, idVariableName) {
     // initialise variables
