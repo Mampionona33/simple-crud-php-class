@@ -237,28 +237,28 @@ export class CustomTableHandler {
         : "submit_modal_update";
 
     return `
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">${title}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <form id="form_modal">
-            <div class="modal-body">
-              <div class="d-flex justify-content-center align-items-center">
-                <div class="col-9">${this.formTemplate(data)}</div>
+        <div class="modal-dialog modal-dialog-centered modal-lg"> <!-- Ajoutez la classe "modal-lg" pour agrandir la largeur -->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">${title}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="form_modal">
+              <div class="modal-body">
+                <div class="d-flex justify-content-center align-items-center">
+                  <div class="col-9">${this.formTemplate(data)}</div>
+                </div>
               </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="submit" id="${
-                this.buttonSubmitId
-              }" class="btn btn-primary">${buttonSubmitText}</button>
-            </div>
-          </form>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" id="${
+                  this.buttonSubmitId
+                }" class="btn btn-primary">${buttonSubmitText}</button>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
-    `;
+      `;
   }
 
   generateAlerteConfrimDelete() {

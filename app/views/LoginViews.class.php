@@ -22,13 +22,13 @@ class LoginViews
                     <div class="form-group row">
                         <label for="email" class="col-sm-3 col-form-label">Identifiant</label>
                         <div class="col-sm-9">
-                            <input type="email" class="form-control form-control-sm" name="email" id="email" placeholder="exemple@email.com" required>
+                            <input type="email" class="form-control form-control-sm" name="email" id="email" placeholder="exemple@email.com" autocomplete="exemple@email.com" required>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="password" class="col-sm-3 col-form-label">Password</label>
                         <div class="col-sm-9">
-                            <input type="password" class="form-control form-control-sm" name="password" id="password" required>
+                            <input type="password" class="form-control form-control-sm" name="password" id="password" autocomplete="current-password" required>
                         </div>
                     </div>
                     <div class="d-flex justify-content-start align-items-center gap-3 btn btn-primary">
