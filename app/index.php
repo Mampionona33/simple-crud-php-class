@@ -57,14 +57,24 @@ switch ($uri) {
     default:
         if (preg_match('/api/i', $uri)) {
             $voterApi = new VotersApi();
+            $userApi = new UserApi();
             if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-                if (isset($_GET['id_voter'])) {
+                if (isset($_GET['id_voter']) && str_contains($uri, "voter")) {
                     $id_voter = $_GET['id_voter'];
                     $voterApi->getVoter($id_voter);
                 }
+                if (isset($_GET['id_user']) && str_contains($uri, "users")) {
+                    $id_user = $_GET["id_user"];
+                    $userApi->getUser($id_user);
+                }
             } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $requestData = json_decode(file_get_contents('php://input'), true);
-                $voterApi->createVoter($requestData);
+                if (str_contains($uri, "voter")) {
+                    $voterApi->createVoter($requestData);
+                } elseif (str_contains($uri, "users")) {
+                    unset($requestData["confirm-password"]);
+                    $userApi->createUser($requestData);
+                }
             } elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
                 $requestData = json_decode(file_get_contents('php://input'), true);
                 $voterApi->updateVoter($requestData);

@@ -61,8 +61,8 @@ export class CustomTableHandler {
     // Créer un modal au click sur un boutton edit
     try {
       const rowData = await this.getRowDataFromApi();
+      console.log(rowData);
       const modalForm = this.generateModal(this.modalEditTitle, rowData[0]);
-      // this.showModal(this.modalEditTitle, rowData[0]);
       this.showModal(modalForm);
     } catch (error) {}
   }

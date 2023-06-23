@@ -50,6 +50,8 @@ class DataManipulator
         if (!empty($condition)) {
             $query .= " WHERE " . $condition;
         }
+
+        // var_dump($query);
         $stmt = $this->db->prepare($query);
 
         try {
