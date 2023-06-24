@@ -50,20 +50,20 @@ const generateVoterForm = (data) => {
     <fieldset>
         <p class="form-label col-form-label">Sélectionnez la civilité</p>
         <div class="form-check">
-            <input class="form-check-input" type="radio" id="Mr" name="civilite" value="Mr" ${
-              data["civilite"] === "Mr" ? "checked" : "checked"
+            <input class="form-check-input" type="radio" id="Mr" name="civility" value="Mr" ${
+              data["civility"] === "Mr" ? "checked" : "checked"
             }>
             <label class="form-check-label" for="Mr">Mr</label>
         </div>
         <div class="form-check">
-            <input class="form-check-input" type="radio" id="Mme" name="civilite" value="Mme" ${
-              data["civilite"] === "Mme" ? "checked" : ""
+            <input class="form-check-input" type="radio" id="Mme" name="civility" value="Mme" ${
+              data["civility"] === "Mme" ? "checked" : ""
             }>
             <label class="form-check-label" for="Mme">Mme</label>
         </div>
         <div class="form-check">
-            <input class="form-check-input" type="radio" id="Mlle" name="civilite" value="Mlle" ${
-              data["civilite"] === "Mlle" ? "checked" : ""
+            <input class="form-check-input" type="radio" id="Mlle" name="civility" value="Mlle" ${
+              data["civility"] === "Mlle" ? "checked" : ""
             }>
             <label class="form-check-label" for="Mlle">Mlle</label>
         </div>

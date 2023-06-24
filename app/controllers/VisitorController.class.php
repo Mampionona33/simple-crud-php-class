@@ -14,6 +14,7 @@ class VisitorController extends AbstractUserController
         $this->tableVoters = new TableVoters;
         $this->navbar = new Navbar();
     }
+
     public function getVoter($voterId): string
     {
         return "test";

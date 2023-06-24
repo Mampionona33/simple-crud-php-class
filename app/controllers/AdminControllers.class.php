@@ -8,7 +8,7 @@ class AdminControllers extends VisitorController
     protected $votersModel;
     protected $usersModel;
     private $userList;
-    private $userTableHeader = ["id_user", "Nom", "Prénom", "date de naissance", "civilité", "adresse", "email", "tel", "role"];
+    private $userTableHeader = ["id_user", "Nom", "Prénom", "date de naissance", "civilité", "adresse", "email", "role"];
 
     private $sidebarItems = [
         ['url' => 'manage_voters', 'title' => 'Gérer électeurs'],
@@ -50,13 +50,14 @@ class AdminControllers extends VisitorController
                     $cardVoter->setTextColor("#fff");
                     $cardVoter->setIcon("how_to_vote");
 
-                    $operatorTotalCount = str_pad((string) $this->usersModel->getOperatorTotalCount(), 2, '0', STR_PAD_LEFT);
+                    $operatorTotalCount = str_pad((string) $this->usersModel->getTotalCountByRole("operator"), 2, '0', STR_PAD_LEFT);
                     $cardOperator = new CustomCard("Opérateurs", "Total: $operatorTotalCount");
                     $cardOperator->setBackgroundColor("#8e24aa");
                     $cardOperator->setTextColor("#fff");
                     $cardOperator->setIcon("badge");
 
-                    $cardAdmin = new CustomCard("Admin", "Total: 00");
+                    $adminTotalCount = str_pad((string) $this->usersModel->getTotalCountByRole("admin"), 2, '0', STR_PAD_LEFT);
+                    $cardAdmin = new CustomCard("Admin", "Total: $adminTotalCount");
                     $cardAdmin->setBackgroundColor("#795548");
                     $cardAdmin->setTextColor("#fff");
                     $cardAdmin->setIcon("supervisor_account");
@@ -104,6 +105,7 @@ class AdminControllers extends VisitorController
         foreach ($this->userList as &$values) {
             if (isset($values["password"])) {
                 unset($values["password"]);
+                unset($values["tel"]);
             }
         }
 

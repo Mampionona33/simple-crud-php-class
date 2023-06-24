@@ -147,7 +147,7 @@ class CustomTable
                 }
 
                 if ($this->btnEditState || $this->btnDetailsState || $this->btnDeleteState) {
-                    $tableBody .= '<td class="d-flex flex-wrap gap-3 justify-content-center">';
+                    $tableBody .= '<td class="d-flex flex-wrap gap-1  justify-content-center">';
                     if ($this->btnEditState) {
                         $tableBody .= $this->renderActionBtn($id, "edit");
                     }

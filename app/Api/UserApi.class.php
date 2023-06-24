@@ -17,12 +17,21 @@ class UserApi extends Api
                 $this->sendResponse(404, ['error' => 'User not found']);
                 return;
             }
+
+            // $hashedPassword = password_hash($user["password"], PASSWORD_BCRYPT);
+            // $user["password"] = $hashedPassword;
+
             $this->sendResponse(200, [$user]);
         }
     }
 
+
     public function createUser($data)
     {
+        // if (isset($data["password"])) {
+        //     $hashedPassword = password_hash($data["password"], PASSWORD_DEFAULT);
+        //     $data["password"] = $hashedPassword;
+        // }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $createdUser = $this->usersModel->createUser($data);
             if ($createdUser) {
@@ -36,7 +45,4 @@ class UserApi extends Api
 
         $this->sendResponse(400, ['error' => 'Invalid request']);
     }
-
-
 }
-?>
